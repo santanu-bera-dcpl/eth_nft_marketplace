@@ -1,0 +1,42 @@
+<!-- Toolbar -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://bulma.io">NFT Marketplace</a>
+
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item">
+        Home
+      </a>
+
+      <a class="navbar-item">
+        Documentation
+      </a>
+    </div>
+
+  </div>
+</nav>
+
+<div class="page" role="main">
+  <div class="left_sidebar">
+    <aside class="menu">
+      <p class="menu-label">
+        NFTs
+      </p>
+      <ul class="menu-list">
+        <li><a routerLink="/nft/list">List</a></li>
+        <li><a routerLink="/nft/create-nft">Create NFT</a></li>
+      </ul>
+    </aside>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
