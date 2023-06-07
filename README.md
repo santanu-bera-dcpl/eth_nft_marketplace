@@ -2,12 +2,12 @@
 Sample Demo of NFT Marketplace on Ethereum.
 
 # Setup Database
-Create a database "eth-nft-marketplace".
+1. Create a database "eth-nft-marketplace".
 
 # Run API
-CD into the root directory.
-npm run dev
+1. CD into the root directory.
+1. npm run dev
 
 # Run Webapp
-CD into the root directory.
-ng serve
+1. CD into the root directory.
+1. ng serve
