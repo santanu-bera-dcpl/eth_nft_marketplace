@@ -17,6 +17,9 @@ let nftSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: true,
+    },
+    files: {
+      type: Object
     }
   },
   { timestamps: true }

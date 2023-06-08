@@ -12,4 +12,15 @@ export class NftApiService {
     let url = environment.API_ENDPOINT + "nft/list";
     return axios.get(url);
   }
+
+  create(formData: FormData) {
+    let url = environment.API_ENDPOINT + "nft/create";
+
+    return axios({
+      method: "post",
+      url: url,
+      data: formData,
+      headers: { "Content-Type": `multipart/form-data` },
+    });
+  }
 }

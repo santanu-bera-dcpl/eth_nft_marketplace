@@ -5,14 +5,14 @@
     <div class="field">
         <label class="label">NFT Title</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Title">
+          <input class="input" type="text" placeholder="Title" [(ngModel)]="nft_title">
         </div>
     </div>
 
     <div class="field">
         <label class="label">Price (in USD)</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Price (in USD)">
+          <input class="input" type="number" placeholder="Price (in USD)" [(ngModel)]="nft_price">
         </div>
     </div>
 
@@ -21,7 +21,7 @@
         <div class="control">
             <div class="file">
                 <label class="file-label">
-                  <input class="file-input" type="file" name="resume">
+                  <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event)">
                   <span class="file-cta">
                     <span class="file-icon">
                       <i class="fas fa-upload"></i>
@@ -34,10 +34,23 @@
             </div>
         </div>
     </div>
+    <div class="uploaded_files">
+      <div class="is-flex is-justify-content-start is-align-content-center" *ngFor="let item of selected_files; index as i;">
+        <div>
+          <img class="box p-0" [src]="item.data"/>
+        </div>
+        <div class="file_name">
+          <span>{{ item.name }}</span>
+        </div>
+        <div class="flex-center is-circle remove_icon box">
+          <i class="fa fa-trash" aria-hidden="true" (click)="removeUploadedFile(i)"></i>
+        </div>
+      </div>
+    </div>
 
-    <div class="field">
+    <div class="field mt-3">
         <div class="control">
-          <button class="button is-link">Submit</button>
+          <button class="button is-link" [attr.disabled]="button_disabled ? true : null" (click)="onSubmit()" >Submit</button>
         </div>
     </div>
 

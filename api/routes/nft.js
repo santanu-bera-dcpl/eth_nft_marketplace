@@ -1,5 +1,7 @@
 import express from "express";
 const router = express.Router();
+import multer from "multer";
+const upload = multer({ dest: "upload" });
 
 // Import controllers --
 import {
@@ -10,6 +12,7 @@ import {
 
 router.post(
   "/create",
+  upload.single("files"),
   create
 );
 
