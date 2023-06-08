@@ -1,7 +1,19 @@
 import express from "express";
 const router = express.Router();
 import multer from "multer";
-const upload = multer({ dest: "upload" });
+import {PROJECT_DIR} from "../const.js";
+
+var storage = multer.diskStorage({
+  // Where to save
+  destination: function (req, file, cb) {
+    cb(null, PROJECT_DIR + '/public/images/nfts')
+  },
+  // File name
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)  // file.originalname will give the original name of the image which you have saved in your computer system
+  }
+});
+const upload = multer({ storage: storage });
 
 // Import controllers --
 import {
@@ -12,7 +24,7 @@ import {
 
 router.post(
   "/create",
-  upload.single("files"),
+  upload.array('files[]'),
   create
 );
 

@@ -8,8 +8,6 @@ export const create = async (req, res) => {
         let title = req.body.title;
         let price = req.body.price;
 
-        return res.status(200).json({has_error: false, nft: title});
-
         let has_error = false;
         let error_message = "";
 
@@ -26,6 +24,12 @@ export const create = async (req, res) => {
         }
 
         let files = [];
+        if(req.files.length > 0){
+            req.files.forEach(file => {
+                files.push(file.originalname);
+            });
+        }
+
         let nft = await NFTModel.create({
             title: title,
             price: price,
