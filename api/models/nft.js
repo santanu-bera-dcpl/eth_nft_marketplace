@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 
+import {
+  NFT_STATUS
+} from "../const.js";
+
 let nftSchema = new mongoose.Schema(
   {
     title: {
@@ -20,6 +24,10 @@ let nftSchema = new mongoose.Schema(
     },
     files: {
       type: Object
+    },
+    status: {
+      type: String,
+      default: NFT_STATUS.DRAFTED
     }
   },
   { timestamps: true }

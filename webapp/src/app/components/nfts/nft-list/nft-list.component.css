@@ -1,0 +1,16 @@
+.infoSection{
+    display: flex;
+    border-bottom: 1px solid #ddd;
+}
+.infoSectionHeader{
+    flex-basis: 200px;
+    border-right: 1px solid #ddd;
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.infoSectionContent{
+    flex: 1;
+    padding: 15px;
+}

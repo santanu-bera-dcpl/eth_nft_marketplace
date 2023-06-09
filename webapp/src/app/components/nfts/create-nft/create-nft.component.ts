@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { NftApiService } from '../../../services/nft-api.service';
 
 @Component({
@@ -13,7 +14,10 @@ export class CreateNftComponent implements OnInit {
   nft_price: any = "";
   selected_files: any = [];
 
-  constructor(private nftApiService: NftApiService) { }
+  constructor(
+    private nftApiService: NftApiService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -27,12 +31,17 @@ export class CreateNftComponent implements OnInit {
     });
     
     console.log(formData);
-    // this.button_disabled = true;
+    this.button_disabled = true;
 
     this.nftApiService.create(formData).then(response => {
       console.log(response.data);
+      this.button_disabled = false;
+      this.resetForm();
+      this.toastr.success('NFT has been created successfully!');
     }).catch(error => {
       console.log(error);
+      this.button_disabled = false;
+      this.toastr.error('Something went wrong while creating NFT!');
     });
   }
 
@@ -63,4 +72,11 @@ export class CreateNftComponent implements OnInit {
   removeUploadedFile(index: number): void {
     this.selected_files = this.selected_files.filter((item: any, i: number)=>i !== index);
   }
+
+  resetForm(){
+    this.nft_title = "";
+    this.nft_price = 0;
+    this.selected_files = [];
+  }
 }
+

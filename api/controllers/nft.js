@@ -47,7 +47,20 @@ export const create = async (req, res) => {
 
 export const list = async (req, res) => {
     try {
-        return res.status(200).json({article: "Hi..."});
+        let condition = {};
+        const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
+        const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
+        const skip = (page - 1) * perPage;
+
+        let allNfts = await NFTModel.aggregate([
+            {
+              $match: condition,
+            },
+            { $skip: skip },
+            { $limit: perPage },
+        ]);
+
+        return res.status(200).json({has_error: false, nfts: allNfts});
     } catch (err) {
 		console.log(err);
 		return res.status(400).json({message: err.message});

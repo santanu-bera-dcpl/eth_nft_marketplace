@@ -1,1 +1,63 @@
-<p>nft-list works!</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th><abbr title="Title">Title</abbr></th>
+      <th><abbr title="Price">Price</abbr></th>
+      <th><abbr title="Status">Status</abbr></th>
+      <th><abbr title="Actions">Actions</abbr></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let nft of nftList; index as i;">
+      <td>{{ nft.title }}</td>
+      <td>{{ nft.price }}</td>
+      <td>{{ nft.status }}</td>
+      <td>
+        <div class="is-circle box pointer is-icon flex-center">
+          <i class="fa fa-eye" aria-hidden="true" (click)="showDetailsModal(i)"></i>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<div class="modal" [ngClass]="(nft_details_modal_open)? 'is-active' : ''">
+  <div class="modal-background" (click)="closeDetailsModal()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">NFT Details</p>
+      <button class="delete" aria-label="close" (click)="closeDetailsModal()"></button>
+    </header>
+    <section class="modal-card-body" *ngIf="selected_nft">
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Title
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.title }}
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Price
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.price }}
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Status
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.status }}
+          </div>
+        </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success">Save changes</button>
+      <button class="button" (click)="closeDetailsModal()">Cancel</button>
+    </footer>
+  </div>
+</div>
