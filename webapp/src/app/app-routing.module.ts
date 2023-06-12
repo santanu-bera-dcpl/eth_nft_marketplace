@@ -6,6 +6,7 @@ import { NftListComponent } from './components/nfts/nft-list/nft-list.component'
 
 const routes: Routes = [
   { path: 'nft/create-nft', component: CreateNftComponent },
+  { path: 'nft/create-nft/:id', component: CreateNftComponent },
   { path: 'nft/list', component: NftListComponent }
 ];
 

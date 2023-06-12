@@ -14,3 +14,9 @@
     flex: 1;
     padding: 15px;
 }
+.image_gallery>img{
+    width: 100px;
+    height: 80px;
+    border-radius: 5px;
+    margin-right: 10px;
+}

@@ -1,4 +1,5 @@
 import { v4 } from "uuid";
+import {NFT_STATUS} from "../const.js";
 
 // Models --
 import NFTModel from "../models/nft.js";
@@ -26,7 +27,10 @@ export const create = async (req, res) => {
         let files = [];
         if(req.files.length > 0){
             req.files.forEach(file => {
-                files.push(file.originalname);
+                files.push({
+                    "name": file.originalname,
+                    "type": "image"
+                });
             });
         }
 
@@ -35,7 +39,8 @@ export const create = async (req, res) => {
             price: price,
             description: "",
             internalId: v4(),
-            files: files
+            files: files,
+            status: NFT_STATUS.DRAFTED
         });
 
         return res.status(200).json({has_error: false, nft: nft});
@@ -47,7 +52,9 @@ export const create = async (req, res) => {
 
 export const list = async (req, res) => {
     try {
-        let condition = {};
+        let condition = {
+            'status': {$ne : NFT_STATUS.TRASHED}
+        };
         const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
         const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
         const skip = (page - 1) * perPage;
@@ -69,9 +76,57 @@ export const list = async (req, res) => {
 
 export const moveToTrash = async (req, res) => {
     try {
-        return res.status(200).json({article: "Hi..."});
+        let internal_id = req.body.id;
+
+        let has_error = false;
+        let error_message = "";
+
+        if(!internal_id){
+            has_error = true;
+            error_message = "Please provide ID!";
+        }
+        if(has_error){
+            return res.status(400).json({has_error: true, message: error_message});
+        }
+
+        // Check if NFT exists --
+        let condition = {"internalId": internal_id, 'status': {$ne : NFT_STATUS.TRASHED}};
+        let nft = await NFTModel.findOne(condition);
+        if(!nft){
+            return res.status(400).json({has_error: true, message: "NFT does not exists !"});
+        }
+
+        await NFTModel.findOneAndUpdate(condition, {
+            status: NFT_STATUS.TRASHED
+        });
+
+        return res.status(200).json({has_error: false, message: "NFT successfully deleted!"});
     } catch (err) {
 		console.log(err);
 		return res.status(400).json({message: err.message});
+	}
+}
+
+export const details = async (req, res) => {
+    try {
+        let internalId = req.params.nftId;
+
+        let has_error = false;
+        let error_message = "";
+
+        if(!internalId){
+            has_error = false;
+            error_message = "Please provide ID!";
+        }
+        if(has_error){
+            return res.status(400).json({has_error: true, message: error_message});
+        }
+
+        let nftDetails = await NFTModel.findOne({'internalId': internalId});
+
+        return res.status(200).json({has_error: false, details: nftDetails});
+    } catch (err) {
+		console.log(err);
+		return res.status(400).json({has_error: true, message: err.message});
 	}
 }

@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_ENDPOINT: 'http://127.0.0.1:5050/'
+  API_ENDPOINT: 'http://127.0.0.1:5050/',
+  NFT_IMAGE_PATH: "http://127.0.0.1:5050/images/nfts/"
 };
 
 /*

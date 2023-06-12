@@ -6,7 +6,7 @@ import {PROJECT_DIR} from "../const.js";
 var storage = multer.diskStorage({
   // Where to save
   destination: function (req, file, cb) {
-    cb(null, PROJECT_DIR + '/public/images/nfts')
+    cb(null, PROJECT_DIR + '/static/images/nfts')
   },
   // File name
   filename: function (req, file, cb) {
@@ -19,7 +19,8 @@ const upload = multer({ storage: storage });
 import {
     create,
     list,
-    moveToTrash
+    moveToTrash,
+    details
 } from "../controllers/nft.js";
 
 router.post(
@@ -36,6 +37,11 @@ router.get(
 router.post(
   "/move-to-trash",
   moveToTrash
+);
+
+router.get(
+  "/details/:nftId",
+  details
 );
 
 export const nftRoutes = router;

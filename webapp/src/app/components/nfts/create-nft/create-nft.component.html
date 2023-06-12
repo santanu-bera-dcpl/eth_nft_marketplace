@@ -50,7 +50,10 @@
 
     <div class="field mt-3">
         <div class="control">
-          <button class="button is-link" [attr.disabled]="button_disabled ? true : null" (click)="onSubmit()" >Submit</button>
+          <button *ngIf="!nftDetails; else updateButton" class="button is-link" [attr.disabled]="button_disabled ? true : null" (click)="onSubmit()" >Submit</button>
+          <ng-template #updateButton>
+            <button class="button is-link" [attr.disabled]="button_disabled ? true : null" (click)="onSubmit()" >Update</button>
+          </ng-template>
         </div>
     </div>
 

@@ -13,6 +13,14 @@ export class NftApiService {
     return axios.get(url);
   }
 
+  details(formData: any) {
+    let url = environment.API_ENDPOINT + "nft/details/";
+    if(formData.id){
+      url = url + formData.id;
+    }
+    return axios.get(url);
+  }
+
   create(formData: FormData) {
     let url = environment.API_ENDPOINT + "nft/create";
 
@@ -21,6 +29,15 @@ export class NftApiService {
       url: url,
       data: formData,
       headers: { "Content-Type": `multipart/form-data` },
+    });
+  }
+
+  delete(formData: any) {
+    let url = environment.API_ENDPOINT + "nft/move-to-trash";
+    return axios({
+      method: "post",
+      url: url,
+      data: formData,
     });
   }
 }

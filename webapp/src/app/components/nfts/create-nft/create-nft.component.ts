@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { NftApiService } from '../../../services/nft-api.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-create-nft',
@@ -8,18 +9,23 @@ import { NftApiService } from '../../../services/nft-api.service';
   styleUrls: ['./create-nft.component.css']
 })
 export class CreateNftComponent implements OnInit {
-
   button_disabled: boolean = false;
   nft_title: any = "";
   nft_price: any = "";
   selected_files: any = [];
+  nftDetails: any;
 
   constructor(
     private nftApiService: NftApiService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    let nft_internal_id = this.route.snapshot.paramMap.get('id');
+    if(nft_internal_id){
+      this.loadNFTDetails(nft_internal_id);
+    }
   }
 
   onSubmit(){
@@ -36,7 +42,7 @@ export class CreateNftComponent implements OnInit {
     this.nftApiService.create(formData).then(response => {
       console.log(response.data);
       this.button_disabled = false;
-      this.resetForm();
+      this.resetForm(null);
       this.toastr.success('NFT has been created successfully!');
     }).catch(error => {
       console.log(error);
@@ -73,10 +79,29 @@ export class CreateNftComponent implements OnInit {
     this.selected_files = this.selected_files.filter((item: any, i: number)=>i !== index);
   }
 
-  resetForm(){
-    this.nft_title = "";
-    this.nft_price = 0;
-    this.selected_files = [];
+  resetForm(data: any){
+    if(data){
+      this.nft_title = data.title;
+      this.nft_price = data.price;
+      this.selected_files = [];
+    }else{
+      this.nft_title = "";
+      this.nft_price = 0;
+      this.selected_files = [];
+    }
+  }
+
+  loadNFTDetails(nftId: string){
+    let formData = {
+      'id': nftId
+    };
+    this.nftApiService.details(formData).then(response => {
+      this.nftDetails = response.data.details;
+      this.resetForm(this.nftDetails);
+    }).catch(error => {
+      console.log(error);
+      this.toastr.error('Something went wrong while deleting NFT!');
+    });
   }
 }
 
