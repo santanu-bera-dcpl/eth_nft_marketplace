@@ -41,7 +41,6 @@ export class CreateNftComponent implements OnInit {
     });
     if(this.nftDetails){
       formData.append("id", this.nftDetails.internalId);
-      console.log(this.existingUploadedFiles);
       formData.append("previous_files", JSON.stringify(this.existingUploadedFiles));
     }    
     
@@ -50,6 +49,7 @@ export class CreateNftComponent implements OnInit {
     this.nftApiService.create(formData).then(response => {
       this.button_disabled = false;
       if(this.nftDetails){
+        console.log(response.data.nft);
         this.resetForm(response.data.nft);
         this.toastr.success('NFT has been updated successfully!');
       }else{
@@ -101,8 +101,10 @@ export class CreateNftComponent implements OnInit {
 
   resetForm(data: any){
     if(data){
+      console.log(data);
       this.nft_title = data.title;
       this.nft_price = data.price;
+      this.existingUploadedFiles = data.files;
       this.selected_files = [];
     }else{
       this.nft_title = "";

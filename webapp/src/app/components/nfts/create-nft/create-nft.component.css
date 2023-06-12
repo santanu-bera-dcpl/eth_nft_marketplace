@@ -1,7 +1,6 @@
 .form-page{
     padding: 20px;
     width: 60%;
-    margin-top: 30px;
 }
 .divider{
     height: 1px;
@@ -33,4 +32,7 @@
 .remove_icon{
     background-color: #ccc;
     cursor: pointer;
+}
+.upload_nft .file-icon{
+    margin-right: 15px !important;
 }

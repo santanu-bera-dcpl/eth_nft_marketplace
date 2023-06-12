@@ -215,3 +215,7 @@ body{
     }
   }
 /* Toastr : End */
+
+.modal-card-head p{
+  margin-bottom: 0 !important;
+}

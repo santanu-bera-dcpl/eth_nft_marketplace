@@ -8,9 +8,20 @@ import { environment } from 'src/environments/environment';
 export class NftApiService {
   constructor() { }
 
-  list() {
-    let url = environment.API_ENDPOINT + "nft/list";
-    return axios.get(url);
+  list(current_page: number, items_per_page: number) {
+    let url = environment.API_ENDPOINT + "nft/list?";
+    if(current_page){
+      url = url + "current_page=" + current_page + "&";
+    }
+    if(items_per_page){
+      url = url + "items_per_page=" + items_per_page;
+    }
+    const config = {
+      method: 'get',
+      url: url
+    };
+    
+    return axios(config);
   }
 
   details(formData: any) {

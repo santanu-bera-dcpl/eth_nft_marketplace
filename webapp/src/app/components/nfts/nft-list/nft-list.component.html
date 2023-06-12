@@ -69,8 +69,7 @@
   </div>
 </div>
 
-<!-- <div *ngIf="selected_nft">
-  <div *ngFor="let image of selected_nft.files; let i=index">
-    <img [src]="image.name" (click)="openLightbox(i)" />
-  </div>
+<!-- <div class="has-text-centered">
+  <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
+  <pagination-controls (pageChange)="getPage($event)" id="server"></pagination-controls>
 </div> -->

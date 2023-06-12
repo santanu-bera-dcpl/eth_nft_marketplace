@@ -2,8 +2,11 @@
     display: flex;
     border-bottom: 1px solid #ddd;
 }
+.infoSection:last-child{
+    border-bottom: none;
+}
 .infoSectionHeader{
-    flex-basis: 200px;
+    flex-basis: 130px;
     border-right: 1px solid #ddd;
     padding: 15px;
     display: flex;

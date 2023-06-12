@@ -49,7 +49,7 @@ export const create = async (req, res) => {
                 });
             }
             // Delete pictures which are deleted in frontend --
-            let nft = await NFTModel.findOne({ internalId: internalId });
+            nft = await NFTModel.findOne({ internalId: internalId });
             if(!nft){
                 throw Error("NFT not found with Internal ID: " + internalId);
             }
@@ -119,7 +119,8 @@ export const list = async (req, res) => {
             { $limit: perPage },
         ]);
 
-        return res.status(200).json({has_error: false, nfts: allNfts});
+        let totalNFTs = await NFTModel.countDocuments(condition);
+        return res.status(200).json({has_error: false, nfts: allNfts, totalNFTs: totalNFTs});
     } catch (err) {
 		console.log(err);
 		return res.status(400).json({message: err.message});

@@ -11,15 +11,35 @@
   color: #fff !important;
 }
 .page{
-  display: flex;
   padding-top: 55px;
+  overflow: hidden;
+  height: calc(100vh - 55px);
 }
 .left_sidebar{
-  flex-basis: 300px;
+  float:left;
+  position: fixed;
+  width: 300px;
   padding-top: 10px;
   padding-left: 30px;
+  height: calc(100vh - 55px);;
+  overflow-y: auto;
 }
 .content{
-  flex: 1;
-  height: 200vh;
+  width: 100%;
+  padding-left: 300px;
+  height: calc(100vh - 55px);
+}
+.nav-link .fa-solid{
+  margin-right: 20px;
+}
+.left_sidebar{
+  background: #141E30;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.left_sidebar *{
+  color: #fff !important;
+}
+.menu-list a:hover{
+  background-color: #795548;
 }

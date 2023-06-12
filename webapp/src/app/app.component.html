@@ -9,19 +9,6 @@
       <span aria-hidden="true"></span>
     </a>
   </div>
-
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-start">
-      <a class="navbar-item">
-        Home
-      </a>
-
-      <a class="navbar-item">
-        Documentation
-      </a>
-    </div>
-
-  </div>
 </nav>
 
 <div class="page" role="main">
@@ -31,8 +18,8 @@
         NFTs
       </p>
       <ul class="menu-list">
-        <li><a routerLink="/nft/list">List</a></li>
-        <li><a routerLink="/nft/create-nft">Create NFT</a></li>
+        <li><a class="nav-link" [routerLink]="['/nft/list']" [routerLinkActive]="['is-active']"><i class="fa-solid fa-list"></i>List</a></li>
+        <li><a class="nav-link" [routerLink]="['/nft/create-nft']" [routerLinkActive]="['is-active']"><i class="fa-solid fa-plus"></i>Create NFT</a></li>
       </ul>
     </aside>
   </div>
