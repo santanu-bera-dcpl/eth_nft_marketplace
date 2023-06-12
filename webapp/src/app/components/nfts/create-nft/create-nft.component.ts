@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { NftApiService } from '../../../services/nft-api.service';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-nft',
@@ -13,7 +14,9 @@ export class CreateNftComponent implements OnInit {
   nft_title: any = "";
   nft_price: any = "";
   selected_files: any = [];
-  nftDetails: any;
+  nftDetails: any = null;
+  existingUploadedFiles: any = null;
+  image_path: string = "";
 
   constructor(
     private nftApiService: NftApiService,
@@ -22,6 +25,7 @@ export class CreateNftComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.image_path = environment.NFT_IMAGE_PATH;
     let nft_internal_id = this.route.snapshot.paramMap.get('id');
     if(nft_internal_id){
       this.loadNFTDetails(nft_internal_id);
@@ -35,19 +39,31 @@ export class CreateNftComponent implements OnInit {
     this.selected_files.forEach((file: any) => {
       formData.append('files[]', file.originalFile);  
     });
+    if(this.nftDetails){
+      formData.append("id", this.nftDetails.internalId);
+      console.log(this.existingUploadedFiles);
+      formData.append("previous_files", JSON.stringify(this.existingUploadedFiles));
+    }    
     
-    console.log(formData);
     this.button_disabled = true;
 
     this.nftApiService.create(formData).then(response => {
-      console.log(response.data);
       this.button_disabled = false;
-      this.resetForm(null);
-      this.toastr.success('NFT has been created successfully!');
+      if(this.nftDetails){
+        this.resetForm(response.data.nft);
+        this.toastr.success('NFT has been updated successfully!');
+      }else{
+        this.resetForm(null);
+        this.toastr.success('NFT has been created successfully!');
+      }      
     }).catch(error => {
       console.log(error);
       this.button_disabled = false;
-      this.toastr.error('Something went wrong while creating NFT!');
+      if(this.nftDetails){
+        this.toastr.error('Something went wrong while updating NFT!');
+      }else{
+        this.toastr.error('Something went wrong while creating NFT!');
+      } 
     });
   }
 
@@ -79,6 +95,10 @@ export class CreateNftComponent implements OnInit {
     this.selected_files = this.selected_files.filter((item: any, i: number)=>i !== index);
   }
 
+  removeExistingUploadedFile(index: number): void {
+    this.existingUploadedFiles = this.existingUploadedFiles.filter((item: any, i: number)=>i !== index);
+  }
+
   resetForm(data: any){
     if(data){
       this.nft_title = data.title;
@@ -97,6 +117,7 @@ export class CreateNftComponent implements OnInit {
     };
     this.nftApiService.details(formData).then(response => {
       this.nftDetails = response.data.details;
+      this.existingUploadedFiles = [...this.nftDetails.files];
       this.resetForm(this.nftDetails);
     }).catch(error => {
       console.log(error);

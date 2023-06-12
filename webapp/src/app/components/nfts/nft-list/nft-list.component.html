@@ -11,7 +11,7 @@
     <tr *ngFor="let nft of nftList; index as i;">
       <td>{{ nft.title }}</td>
       <td>{{ nft.price }} USD</td>
-      <td>{{ nft.status }}</td>
+      <td>{{ getNFTStatusText(nft.status) }}</td>
       <td>
         <div class="is-circle box pointer is-icon flex-center">
           <i class="fa fa-eye" aria-hidden="true" (click)="showDetailsModal(i)"></i>
@@ -50,7 +50,7 @@
             Status
           </div>
           <div class="infoSectionContent">
-            {{ selected_nft.status }}
+            {{ getNFTStatusText(selected_nft.status) }}
           </div>
         </div>
         <div class="infoSection">
@@ -58,7 +58,7 @@
             Files
           </div>
           <div class="infoSectionContent image_gallery">
-            <img [src]="image_path + file" alt="" *ngFor="let file of selected_nft.files; index as i;">
+            <img *ngFor="let file of selected_nft.files; index as i;" [src]="image_path + file.name" alt="" (click)="openLightbox(i)" />
           </div>
         </div>
     </section>
@@ -68,3 +68,9 @@
     </footer>
   </div>
 </div>
+
+<!-- <div *ngIf="selected_nft">
+  <div *ngFor="let image of selected_nft.files; let i=index">
+    <img [src]="image.name" (click)="openLightbox(i)" />
+  </div>
+</div> -->

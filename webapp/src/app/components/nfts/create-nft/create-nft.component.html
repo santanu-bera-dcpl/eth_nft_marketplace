@@ -47,6 +47,21 @@
         </div>
       </div>
     </div>
+    <div class="uploaded_files" *ngIf="existingUploadedFiles">
+      <div *ngFor="let item of existingUploadedFiles; index as i;">
+        <div class="is-flex is-justify-content-start is-align-content-center" *ngIf="item.type === 'image'">
+          <div>
+            <img class="box p-0" [src]="image_path + item.name"/>
+          </div>
+          <div class="file_name">
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="flex-center is-circle remove_icon box">
+            <i class="fa fa-trash" aria-hidden="true" (click)="removeExistingUploadedFile(i)"></i>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="field mt-3">
         <div class="control">
