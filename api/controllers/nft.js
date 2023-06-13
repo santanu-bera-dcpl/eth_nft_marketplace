@@ -1,6 +1,8 @@
 import { v4 } from "uuid";
 import fs from "fs";
 import path from "path";
+import Web3 from "web3";
+
 import {
     PROJECT_DIR,
     NFT_STATUS
