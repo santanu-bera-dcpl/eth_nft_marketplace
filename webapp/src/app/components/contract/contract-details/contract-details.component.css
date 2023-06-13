@@ -1,0 +1,9 @@
+.contract_address_container{
+    padding: 30px;
+}
+.connected_text{
+    display: flex;
+    align-items: center;
+    color: green;
+    font-weight: bold;
+}
