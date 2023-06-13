@@ -9,12 +9,14 @@ import { AppComponent } from './app.component';
 import { CreateNftComponent } from './components/nfts/create-nft/create-nft.component';
 import { NftListComponent } from './components/nfts/nft-list/nft-list.component';
 import { FormsModule } from '@angular/forms';
+import { ContractDetailsComponent } from './components/contract/contract-details/contract-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateNftComponent,
-    NftListComponent
+    NftListComponent,
+    ContractDetailsComponent
   ],
   imports: [
     BrowserModule,

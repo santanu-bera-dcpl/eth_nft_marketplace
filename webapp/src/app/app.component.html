@@ -1,13 +1,10 @@
 <!-- Toolbar -->
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" href="https://bulma.io">NFT Marketplace</a>
-
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
+    <a class="navbar-item" href="/">NFT Marketplace</a>
+  </div>
+  <div class="navbar-menu navbar-end">
+    <a class="navbar-item" [routerLink]="['/contract/details']" [routerLinkActive]="['active-nav']"><i class="fa-solid fa-file-contract mr-3"></i>Contract</a>
   </div>
 </nav>
 

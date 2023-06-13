@@ -219,3 +219,6 @@ body{
 .modal-card-head p{
   margin-bottom: 0 !important;
 }
+.navbar-item.is-active{
+  background: #673ab7 !important;
+}

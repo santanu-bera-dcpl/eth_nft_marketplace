@@ -43,3 +43,9 @@
 .menu-list a:hover{
   background-color: #795548;
 }
+.navbar-menu .navbar-item:hover{
+  background-color: #795548;
+}
+.active-nav{
+  background-color: #485fc7 !important;
+}
