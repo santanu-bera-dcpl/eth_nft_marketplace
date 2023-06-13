@@ -1,6 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { Observable, of} from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { Component, OnInit} from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { NftApiService } from '../../../services/nft-api.service';
 import { ToastrService } from 'ngx-toastr';
@@ -8,28 +6,24 @@ import { Router } from '@angular/router';
 import { NFT_STATUS } from "../../../constant";
 import { Lightbox } from 'ngx-lightbox';
 
-interface IServerResponse {
-  items: string[];
-  total: number;
-}
-
 @Component({
   selector: 'app-nft-list',
   templateUrl: './nft-list.component.html',
-  styleUrls: ['./nft-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./nft-list.component.css']
 })
 export class NftListComponent implements OnInit {
 
   nftList: any[] = [];
-  asyncNftList: Observable<string[]>;
   nft_details_modal_open: boolean = false;
   selected_nft: any;
   image_path: string = "";
   loading: boolean = false;
-  items_per_page: number = 10;
+  items_per_page: number = 3;
   current_page: number = 1;
   total_items: number = 200;
+  pagination_items: any[] = [];
+  minting: boolean = false;
+  minting_button_disabled: boolean = false;
 
   constructor(
     private nftApiService: NftApiService,
@@ -47,11 +41,11 @@ export class NftListComponent implements OnInit {
     this.nftApiService.list(current_page, this.items_per_page).then(response => {
       this.nftList = response.data.nfts;
       this.total_items = response.data.totalNFTs;
+      this.pagination_items = this.pagination(current_page, Math.ceil(this.total_items/this.items_per_page));
     }).catch(error => {
       console.log(error);
     });
   }
-
   showDetailsModal(index: number){
     this.selected_nft = this.nftList[index];
     this.nft_details_modal_open = true;
@@ -101,10 +95,83 @@ export class NftListComponent implements OnInit {
         caption: item.name
       };
     });
-    console.log(albums);
     this._lightbox.open(albums, index);
   }
-  getPage($event: any){
-    console.log($event);
+  pagination(current: number, last: number, delta = 2) {
+    if (last === 1) return [1];
+  
+    const left = current - delta,
+      right = current + delta + 1,
+      range = [];
+  
+    if (last > 1 && current !== 1) {
+      range.push("<");
+    }
+  
+    for (let i = 1; i <= last; i++) {
+      if (i == 1 || i == last || (i >= left && i < right)) {
+        if (i === left && i > 2) {
+          range.push("...");
+        }
+  
+        if (i === current) {
+          range.push("*" + i + "*");
+        } else {
+          range.push(i);
+        }
+  
+        if (i === right - 1 && i < last - 1) {
+          range.push("...");
+        }
+      }
+    }
+  
+    if (last > 1 && current !== last) {
+      range.push(">");
+    }
+  
+    return range;
+  }
+  getPageItemText(pageItem: any){
+    if(isNaN(pageItem)){
+      if(pageItem.indexOf('*') === 0){
+        return Number(pageItem.charAt(1));
+      }
+    }else{
+      return pageItem;
+    }
+  }
+  isNumber(value: any) {
+    return !isNaN(value);
+  }
+  goPrev(){
+    this.current_page = this.current_page - 1;
+    this.getNFTList(this.current_page);
+  }
+  goNext(){
+    this.current_page = this.current_page + 1;
+    this.getNFTList(this.current_page);
+  }
+  goToPage(pageItem: any){
+    this.current_page = Number(pageItem);
+    this.getNFTList(this.current_page);
+  }
+  mintNFT(){
+    this.minting = true;
+    this.minting_button_disabled = true;
+
+    let formData = new FormData();
+    formData.append("id", this.selected_nft.internalId);
+
+    this.nftApiService.mint(formData).then(response => {
+      this.minting = false;
+      this.minting_button_disabled = false;
+      this.toastr.success('NFT has been minted successfully!');     
+    }).catch(error => {
+      console.log(error);
+      this.minting = false;
+      this.minting_button_disabled = false;
+      this.toastr.error('Something went wrong while minting NFT!');
+    });
   }
 }

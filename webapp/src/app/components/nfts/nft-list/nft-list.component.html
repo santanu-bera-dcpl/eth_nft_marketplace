@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table is-fullwidth">
   <thead>
     <tr>
       <th><abbr title="Title">Title</abbr></th>
@@ -55,6 +55,14 @@
         </div>
         <div class="infoSection">
           <div class="infoSectionHeader">
+            Minted
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.minted ? "Yes" : "No" }}
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
             Files
           </div>
           <div class="infoSectionContent image_gallery">
@@ -63,13 +71,27 @@
         </div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-success mr-4" (click)="goToEditNFT()">Edit</button>
-      <button class="button is-danger" (click)="deleteNFT()">Delete NFT</button>
+      <button class="button is-success mr-2" (click)="goToEditNFT()">Edit</button>
+      <button class="button is-info mr-2" (click)="mintNFT()" [ngClass]="(minting)? 'is-loading' : ''" [attr.disabled]="minting_button_disabled ? true : null">Mint NFT</button>
+      <button class="button is-danger mr-2" (click)="deleteNFT()">Delete NFT</button>
     </footer>
   </div>
 </div>
 
-<!-- <div class="has-text-centered">
-  <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
-  <pagination-controls (pageChange)="getPage($event)" id="server"></pagination-controls>
-</div> -->
+<div class="pagination_container is-centered">
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <ng-template ngFor let-pageItem [ngForOf]="pagination_items">
+        <a class="pagination-previous" (click)="goPrev()" *ngIf="pageItem === '<'">Previous</a>
+        <a class="pagination-next" (click)="goNext()" *ngIf="pageItem === '>'">Next page</a>
+      </ng-template>
+      
+      <ul class="pagination-list">
+        <ng-template ngFor let-pageItem [ngForOf]="pagination_items">
+          <li *ngIf="isNumber(pageItem)" (click)="goToPage(pageItem)"><a class="pagination-link">{{ pageItem }}</a></li>
+          <li *ngIf="pageItem === '...'"><span class="pagination-ellipsis">&hellip;</span></li>
+          <li *ngIf="!isNumber(pageItem) && pageItem.indexOf('*') === 0"><a class="pagination-link is-current">{{ pageItem.charAt(1) }}</a></li>          
+        </ng-template>        
+      </ul>
+    </nav>
+</div>
+

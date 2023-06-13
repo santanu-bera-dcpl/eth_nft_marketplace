@@ -24,3 +24,10 @@
     margin-right: 10px;
     cursor: pointer;
 }
+.pagination_container{
+    width: 60%;
+    margin: auto;
+}
+.pagination-list{
+    margin-top: 0 !important;
+}

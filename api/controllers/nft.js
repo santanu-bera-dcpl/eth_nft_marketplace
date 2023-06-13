@@ -156,7 +156,7 @@ export const moveToTrash = async (req, res) => {
         return res.status(200).json({has_error: false, message: "NFT successfully deleted!"});
     } catch (err) {
 		console.log(err);
-		return res.status(400).json({message: err.message});
+		return res.status(400).json({has_error: true, message: err.message});
 	}
 }
 
@@ -179,6 +179,15 @@ export const details = async (req, res) => {
 
         return res.status(200).json({has_error: false, details: nftDetails});
     } catch (err) {
+		console.log(err);
+		return res.status(400).json({has_error: true, message: err.message});
+	}
+}
+
+export const mint = async (req, res) => {
+    try { 
+        return res.status(200).json({has_error: false, message: "NFT successfully minted!"});
+    }catch (err) {
 		console.log(err);
 		return res.status(400).json({has_error: true, message: err.message});
 	}

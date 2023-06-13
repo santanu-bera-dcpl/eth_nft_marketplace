@@ -20,7 +20,8 @@ import {
     create,
     list,
     moveToTrash,
-    details
+    details,
+    mint
 } from "../controllers/nft.js";
 
 router.post(
@@ -42,6 +43,11 @@ router.post(
 router.get(
   "/details/:nftId",
   details
+);
+
+router.post(
+  "/mint",
+  mint
 );
 
 export const nftRoutes = router;

@@ -28,6 +28,10 @@ let nftSchema = new mongoose.Schema(
     status: {
       type: String,
       default: NFT_STATUS.DRAFTED
+    },
+    minted: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
