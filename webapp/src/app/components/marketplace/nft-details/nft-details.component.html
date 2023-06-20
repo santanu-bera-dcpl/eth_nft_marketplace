@@ -1,0 +1,30 @@
+<div class="nft_details_container">
+    <div class="box" *ngIf="nftDetails">
+        <h1 class="has-text-centered is-size-3">NFT Details</h1>
+        <p>
+            <b>Title: </b>
+            <span>{{ nftDetails.title }} USD</span>
+        </p>
+        <p>
+            <b>Price: </b>
+            <span>{{ nftDetails.price }} USD</span>
+        </p>
+        <div class="uploaded_files" *ngIf="nftDetails.files">
+            <h2>NFTs ({{ nftDetails.files ? nftDetails.files.length : 0 }})</h2>
+            <div class="is-flex is-justify-content-start is-align-content-center" *ngFor="let file of nftDetails.files; index as i;">
+              <div>
+                <img class="box p-0" [src]="image_path + file.name"/>
+              </div>
+              <div class="file_name">
+                <span>{{ file.name }}</span>
+              </div>
+              <div class="flex-center is-circle remove_icon box" (click)="openLightbox(i)">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+              </div>
+            </div>
+        </div>
+        <div class="purchase_button">
+            <button class="button is-link" (click)="purchaseNFT()">Purchase NFT</button>
+        </div>
+    </div>
+</div>

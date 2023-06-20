@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NftApiService } from '../../../services/nft-api.service';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { NftApiService } from 'src/app/services/nft-api.service';
 
 @Component({
   selector: 'app-nft-list',
@@ -12,13 +14,16 @@ export class NftListComponent {
   current_page: number = 1;
   total_items: number;
   pagination_items: any[] = [];
+  thumbnail_path: string = "";
 
   constructor(
-    private nftApiService: NftApiService
+    private nftApiService: NftApiService,
+    private _router: Router,
   ) {
   }
 
   ngOnInit(): void {
+    this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
     this.getNFTList(this.current_page);
   }
   getNFTList(current_page: number){
@@ -86,5 +91,8 @@ export class NftListComponent {
   goToPage(pageItem: any){
     this.current_page = Number(pageItem);
     this.getNFTList(this.current_page);
+  }
+  goToNFTDetailsPage(nft: any){
+    this._router.navigateByUrl('/marketplace/nft-details/' + nft.internalId);
   }
 }

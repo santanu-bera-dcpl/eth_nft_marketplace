@@ -1,6 +1,12 @@
 <div class="nftListContainer">
     <div class="nftCard box" *ngFor="let nft of nftList; index as i;">
-        <img src="" alt="">
+        <img [src]="thumbnail_path + nft.thumbnail" alt="">
         <p>{{ nft.title }}</p>
+        <p><b>Price</b> : {{ nft.price }} USD</p>
+        <p><b>Total NFTs</b> : {{ nft.files ? nft.files.length : 0 }}</p>
+        <div class="spacer"></div>
+        <div>
+            <a class="button is-link" (click)="goToNFTDetailsPage(nft)"><i class="fa-solid fa-eye mr-3"></i>Details</a>
+        </div>
     </div>
 </div>

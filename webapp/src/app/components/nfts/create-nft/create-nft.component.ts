@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { NftApiService } from '../../../services/nft-api.service';
+import { NftApiService } from 'src/app/services/nft-api.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
@@ -160,7 +160,7 @@ export class CreateNftComponent implements OnInit {
       this.resetForm(this.nftDetails);
     }).catch(error => {
       console.log(error);
-      this.toastr.error('Something went wrong while deleting NFT!');
+      this.toastr.error('Something went wrong while retrieving NFT!');
     });
   }
 }

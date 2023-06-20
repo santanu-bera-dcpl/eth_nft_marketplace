@@ -12,6 +12,7 @@ import { NftListComponent as MarketplaceNftListComponent } from './components/ma
 import { FormsModule } from '@angular/forms';
 import { ContractDetailsComponent } from './components/contract/contract-details/contract-details.component';
 import { CommonModule } from '@angular/common';
+import { NftDetailsComponent } from './components/marketplace/nft-details/nft-details.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CommonModule } from '@angular/common';
     CreateNftComponent,
     NftListComponent,
     ContractDetailsComponent,
-    MarketplaceNftListComponent
+    MarketplaceNftListComponent,
+    NftDetailsComponent
   ],
   imports: [
     BrowserModule,
