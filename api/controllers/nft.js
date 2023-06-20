@@ -1,7 +1,6 @@
 import { v4 } from "uuid";
 import fs from "fs";
 import path from "path";
-import Web3 from "web3";
 
 import {
     PROJECT_DIR,
@@ -16,7 +15,11 @@ export const create = async (req, res) => {
         let internalId = req.body.id;
         let title = req.body.title;
         let price = req.body.price;
-        let previous_files = req.body.previous_files;
+        let previous_files = req.body.previous_files; 
+
+        let thumbnailImageName = "";
+        let thumbnail = (req.files.thumbnail && req.files.thumbnail.length > 0) ? req.files.thumbnail[0] : null;
+        let uploadedNFTs = req.files.nfts;
 
         let has_error = false;
         let error_message = "";
@@ -26,7 +29,7 @@ export const create = async (req, res) => {
             error_message = "Please provide title!";
         }
         if(!price){
-            has_error = false;
+            has_error = true;
             error_message = "Please provide price!";
         }
         if(has_error){
@@ -35,8 +38,8 @@ export const create = async (req, res) => {
 
         let nft;
         let files = [];
-        if(req.files.length > 0){
-            req.files.forEach(file => {
+        if(uploadedNFTs && uploadedNFTs.length > 0){
+            uploadedNFTs.forEach(file => {
                 files.push({
                     "name": file.originalname,
                     "type": "image"
@@ -75,22 +78,49 @@ export const create = async (req, res) => {
                     }
                 }
             });
+            
+            // Delete thumbnail Image if there is uploaded thumbnail--
+            if(nft.thumbnail && thumbnail && nft.thumbnail !== thumbnail.originalname){
+                // remove previous thumb image from folder --
+                let image_path = path.join(PROJECT_DIR + "/static/images/thumbnails/" + nft.thumbnail);
+                if (fs.existsSync(image_path)) {
+                    console.log("Deleting Image : " + image_path);
+                    fs.unlink(image_path, (err) => {
+                        if (err) throw Error("Error while deleting previous file !");
+                        console.log("File deleted successfully !");
+                    });
+                }
+                thumbnailImageName = thumbnail.originalname;
+            }else if(thumbnail){
+                thumbnailImageName = thumbnail.originalname;
+            }else{
+                thumbnailImageName = nft.thumbnail;
+            }
+
             // Update NFT --
             await NFTModel.findOneAndUpdate({
                internalId: internalId 
             },{
                 title: title,
                 price: price,
+                thumbnail: thumbnailImageName,
                 description: "",
                 files: files
             });
 
             nft = await NFTModel.findOne({internalId: internalId});
         }else{
+            if(thumbnail){
+                thumbnailImageName = thumbnail.originalname;
+            }else{
+                return res.status(200).json({has_error: true, message: "Please upload thumbnail image!"});
+            }
+
             nft = await NFTModel.create({
                 title: title,
                 price: price,
                 description: "",
+                thumbnail: thumbnailImageName,
                 internalId: v4(),
                 files: files,
                 status: NFT_STATUS.DRAFTED
@@ -192,5 +222,30 @@ export const mint = async (req, res) => {
     }catch (err) {
 		console.log(err);
 		return res.status(400).json({has_error: true, message: err.message});
+	}
+}
+
+export const public_list = async (req, res) => {
+    try {
+        let condition = {
+            'status': {$ne : NFT_STATUS.TRASHED}
+        };
+        const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
+        const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
+        const skip = (page - 1) * perPage;
+
+        let allNfts = await NFTModel.aggregate([
+            {
+              $match: condition,
+            },
+            { $skip: skip },
+            { $limit: perPage },
+        ]);
+
+        let totalNFTs = await NFTModel.countDocuments(condition);
+        return res.status(200).json({has_error: false, nfts: allNfts, totalNFTs: totalNFTs});
+    } catch (err) {
+		console.log(err);
+		return res.status(400).json({message: err.message});
 	}
 }

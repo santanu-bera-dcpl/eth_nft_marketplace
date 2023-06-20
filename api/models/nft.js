@@ -17,6 +17,10 @@ let nftSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    thumbnail: {
+      type: String,
+      required: true
+    },
     internalId: {
       type: String,
       unique: true,

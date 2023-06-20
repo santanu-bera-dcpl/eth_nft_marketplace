@@ -9,7 +9,12 @@
   </thead>
   <tbody>
     <tr *ngFor="let nft of nftList; index as i;">
-      <td>{{ nft.title }}</td>
+      <td>
+        <div class="nftTitle">
+          <img class="nftThumbnail" [src]="thumbnail_path + nft.thumbnail" />
+          {{ nft.title }}
+        </div>
+      </td>
       <td>{{ nft.price }} USD</td>
       <td>{{ getNFTStatusText(nft.status) }}</td>
       <td>
@@ -29,6 +34,14 @@
       <button class="delete" aria-label="close" (click)="closeDetailsModal()"></button>
     </header>
     <section class="modal-card-body" *ngIf="selected_nft">
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Thumbnail
+          </div>
+          <div class="infoSectionContent">
+            <img class="nftThumbnailInDetails" [src]="thumbnail_path + selected_nft.thumbnail" />
+          </div>
+        </div>
         <div class="infoSection">
           <div class="infoSectionHeader">
             Title

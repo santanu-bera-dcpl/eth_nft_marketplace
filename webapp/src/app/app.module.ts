@@ -8,18 +8,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CreateNftComponent } from './components/nfts/create-nft/create-nft.component';
 import { NftListComponent } from './components/nfts/nft-list/nft-list.component';
+import { NftListComponent as MarketplaceNftListComponent } from './components/marketplace/nft-list/nft-list.component';
 import { FormsModule } from '@angular/forms';
 import { ContractDetailsComponent } from './components/contract/contract-details/contract-details.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateNftComponent,
     NftListComponent,
-    ContractDetailsComponent
+    ContractDetailsComponent,
+    MarketplaceNftListComponent
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,

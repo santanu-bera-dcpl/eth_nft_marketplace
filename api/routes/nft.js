@@ -6,7 +6,11 @@ import {PROJECT_DIR} from "../const.js";
 var storage = multer.diskStorage({
   // Where to save
   destination: function (req, file, cb) {
-    cb(null, PROJECT_DIR + '/static/images/nfts')
+    if(file.fieldname === 'thumbnail'){
+      cb(null, PROJECT_DIR + '/static/images/thumbnails')
+    }else if(file.fieldname === 'nfts'){
+      cb(null, PROJECT_DIR + '/static/images/nfts')
+    }
   },
   // File name
   filename: function (req, file, cb) {
@@ -21,12 +25,13 @@ import {
     list,
     moveToTrash,
     details,
-    mint
+    mint,
+    public_list
 } from "../controllers/nft.js";
 
 router.post(
   "/create",
-  upload.array('files[]'),
+  upload.fields([{name: 'nfts', maxCount: 100}, {name: 'thumbnail', maxCount: 1}]),
   create
 );
 
@@ -48,6 +53,11 @@ router.get(
 router.post(
   "/mint",
   mint
+);
+
+router.get(
+  "/public_list",
+  public_list
 );
 
 export const nftRoutes = router;

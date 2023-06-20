@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NFT_STATUS } from "../../../constant";
 import { Lightbox } from 'ngx-lightbox';
+import { Blockchain } from 'src/blockchain';
+import CryptoBoys from 'src/abis/CryptoBoys.json';
 
 @Component({
   selector: 'app-nft-list',
@@ -13,14 +15,16 @@ import { Lightbox } from 'ngx-lightbox';
 })
 export class NftListComponent implements OnInit {
 
+  blockchain: Blockchain;
   nftList: any[] = [];
   nft_details_modal_open: boolean = false;
   selected_nft: any;
   image_path: string = "";
+  thumbnail_path: string = "";
   loading: boolean = false;
   items_per_page: number = 3;
   current_page: number = 1;
-  total_items: number = 200;
+  total_items: number;
   pagination_items: any[] = [];
   minting: boolean = false;
   minting_button_disabled: boolean = false;
@@ -30,11 +34,14 @@ export class NftListComponent implements OnInit {
     private toastr: ToastrService,
     private _router: Router,
     private _lightbox: Lightbox
-  ) { }
+  ) { 
+    this.blockchain = new Blockchain();
+  }
 
   ngOnInit(): void {
     this.getNFTList(this.current_page);
     this.image_path = environment.NFT_IMAGE_PATH;
+    this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
   }
 
   getNFTList(current_page: number){
@@ -156,22 +163,37 @@ export class NftListComponent implements OnInit {
     this.current_page = Number(pageItem);
     this.getNFTList(this.current_page);
   }
-  mintNFT(){
+  async mintNFT(){
     this.minting = true;
     this.minting_button_disabled = true;
+    let contract = await this.blockchain.getContractInstance(CryptoBoys);
 
-    let formData = new FormData();
-    formData.append("id", this.selected_nft.internalId);
+    if(!contract){
+      this.minting = true;
+      this.minting_button_disabled = true;
+      this.toastr.error('Contract not found !');
+    }
 
-    this.nftApiService.mint(formData).then(response => {
-      this.minting = false;
-      this.minting_button_disabled = false;
-      this.toastr.success('NFT has been minted successfully!');     
-    }).catch(error => {
-      console.log(error);
-      this.minting = false;
-      this.minting_button_disabled = false;
-      this.toastr.error('Something went wrong while minting NFT!');
-    });
+    // // Get NFT Details --
+    // contract.methods.mintCryptoBoy(name, tokenURI, price, colorsArray)
+    //   .send({ from: this.state.accountAddress })
+    //   .on("confirmation", () => {
+    //       localStorage.setItem(this.state.accountAddress, new Date().getTime());
+    //       this.setState({ loading: false });
+    //       window.location.reload();
+    //   });
+    // return;
+    // let formData = new FormData();
+    // formData.append("id", this.selected_nft.internalId);
+    // this.nftApiService.mint(formData).then(response => {
+    //   this.minting = false;
+    //   this.minting_button_disabled = false;
+    //   this.toastr.success('NFT has been minted successfully!');     
+    // }).catch(error => {
+    //   console.log(error);
+    //   this.minting = false;
+    //   this.minting_button_disabled = false;
+    //   this.toastr.error('Something went wrong while minting NFT!');
+    // });
   }
 }

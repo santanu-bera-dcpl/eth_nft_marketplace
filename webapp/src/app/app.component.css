@@ -13,7 +13,7 @@
 .page{
   padding-top: 55px;
   overflow: hidden;
-  height: calc(100vh - 55px);
+  height: calc(100vh);
 }
 .left_sidebar{
   float:left;
@@ -28,6 +28,7 @@
   width: 100%;
   padding-left: 300px;
   height: calc(100vh - 55px);
+  overflow-y: auto;
 }
 .nav-link .fa-solid{
   margin-right: 20px;

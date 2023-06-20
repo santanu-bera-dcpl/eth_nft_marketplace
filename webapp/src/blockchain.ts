@@ -18,6 +18,47 @@ export class Blockchain{
     async connectToMetamask(){
         await window.ethereum.enable();
     }
+    async getNetworkID(): Promise<string>{
+        return await window.web3.eth.net.getId();
+    }
+    async hasContractDeployed(networkId: string, contractABI: any): Promise<boolean>{
+        if(!networkId){
+            return false;
+        }
+        let networks: any = contractABI.networks;
+        const networkData: any = networks[networkId];
+        if(networkData){
+            const contractInstance = new window.web3.eth.Contract(contractABI.abi, networkData.address);
+            if (contractInstance){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    async getContractInstance(contractABI: any): Promise<any>{
+        let network_id = await this.getNetworkID();
+        if(!network_id){
+            return null;
+        }
+        let networks: any = contractABI.networks;
+        const networkData: any = networks[network_id];
+        if(networkData){
+            return new window.web3.eth.Contract(contractABI.abi, networkData.address);
+        }else{
+            return null;
+        }
+    }
+    getContractAddress(networkId: string, contractABI: any): string|null{
+        if(!networkId){
+            return null;
+        }
+        let networks: any = contractABI.networks;
+        const networkData: any = networks[networkId];
+        return networkData.address;
+    }
     async getAccountAddress(): Promise<string|null>{
         let accounts = await window.web3.eth.getAccounts();
         if(accounts.length){

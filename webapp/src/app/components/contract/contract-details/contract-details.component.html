@@ -19,4 +19,28 @@
             <p class="has-text-weight-bold is-size-1">{{ account_balance }} ETH</p>
         </div>    
     </div>
+
+    <div *ngIf="metamaskConnected" class="box is-flex">
+        <div class="is-flex-grow-1">
+            <h1 class="is-size-3">Network ID</h1>
+            <p class="has-text-weight-bold">{{ network_id }}</p>
+        </div>
+    </div>
+
+    <div class="box">
+        <h1 class="mb-2 is-size-3">Deploy your Contract</h1>
+        <div *ngIf="!contractDeployed" class="not_connected_text">
+            <i class="fa-solid fa-times mr-2"></i>
+            <span>Contract is not Deployed</span>
+        </div>
+        <div *ngIf="contractDeployed" class="connected_text">
+            <i class="fa-solid fa-check mr-2"></i>
+            <span>Contract is Deployed</span>
+        </div>
+    </div>
+
+    <div *ngIf="contractDeployed" class="box">
+        <h1 class="mb-2 is-size-3">Contract Address</h1>
+        <p class="has-text-weight-bold">{{ contract_address }}</p>
+    </div>
 </div>

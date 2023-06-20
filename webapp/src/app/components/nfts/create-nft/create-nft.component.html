@@ -14,6 +14,24 @@
     </div>
 
     <div class="field upload_nft">
+      <label class="label">Upload Thumbnail</label>
+      <div class="control">
+          <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="resume" (change)="handleThumbnailSelected($event)">
+                <span class="file-cta">
+                  <span class="file-icon"><i class="fas fa-upload"></i></span>
+                  <span class="file-label">Upload Thumbnail</span>
+                </span>
+              </label>
+          </div>
+      </div>
+    </div>
+    <div class="thumbnailImageViewer" *ngIf="thumbnailImage">
+      <img [src]="thumbnailImage" alt="thumbnail image">
+    </div>
+
+    <div class="field upload_nft">
         <label class="label">Upload NFT</label>
         <div class="control">
             <div class="file">
@@ -21,7 +39,7 @@
                   <input class="file-input" type="file" name="resume" (change)="fileChangeEvent($event)">
                   <span class="file-cta">
                     <span class="file-icon"><i class="fas fa-upload"></i></span>
-                    <span class="file-label">Choose a file…</span>
+                    <span class="file-label">Upload NFTs</span>
                   </span>
                 </label>
             </div>

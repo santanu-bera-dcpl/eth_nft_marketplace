@@ -17,6 +17,9 @@ export class CreateNftComponent implements OnInit {
   nftDetails: any = null;
   existingUploadedFiles: any = null;
   image_path: string = "";
+  thumbnail_path: string = "";
+  thumbnailData: any;
+  thumbnailImage: string|ArrayBuffer|null;
 
   constructor(
     private nftApiService: NftApiService,
@@ -26,6 +29,7 @@ export class CreateNftComponent implements OnInit {
 
   ngOnInit(): void {
     this.image_path = environment.NFT_IMAGE_PATH;
+    this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
     let nft_internal_id = this.route.snapshot.paramMap.get('id');
     if(nft_internal_id){
       this.loadNFTDetails(nft_internal_id);
@@ -33,11 +37,20 @@ export class CreateNftComponent implements OnInit {
   }
 
   onSubmit(){
+    if(!this.nft_title){
+      this.toastr.error('Please provide title of the NFT !');
+      return;
+    }
+    if(!this.nft_price){
+      this.toastr.error('Please provide price of the NFT !');
+      return;
+    }
     let formData: FormData = new FormData();
     formData.append('title', this.nft_title);
     formData.append('price', this.nft_price);
+    formData.append('thumbnail', this.thumbnailData);
     this.selected_files.forEach((file: any) => {
-      formData.append('files[]', file.originalFile);  
+      formData.append('nfts', file.originalFile);
     });
     if(this.nftDetails){
       formData.append("id", this.nftDetails.internalId);
@@ -91,6 +104,25 @@ export class CreateNftComponent implements OnInit {
     this.selected_files = [...this.selected_files, imageData];
   }
 
+  handleThumbnailSelected(event: any): void {
+    const files = event.target.files;
+    if (files.length === 0)
+        return;
+
+    const mimeType = files[0].type;
+    if (mimeType.match(/image\/*/) == null) {
+        alert("Only images are supported");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]); 
+    reader.onload = (_event) => {
+      this.thumbnailData = files[0];
+      this.thumbnailImage = reader.result;
+    }
+  }
+
   removeUploadedFile(index: number): void {
     this.selected_files = this.selected_files.filter((item: any, i: number)=>i !== index);
   }
@@ -106,10 +138,15 @@ export class CreateNftComponent implements OnInit {
       this.nft_price = data.price;
       this.existingUploadedFiles = data.files;
       this.selected_files = [];
+      this.thumbnailData = null;
+      this.thumbnailImage = this.thumbnail_path + data.thumbnail;
     }else{
       this.nft_title = "";
       this.nft_price = 0;
+      this.existingUploadedFiles = [];
       this.selected_files = [];
+      this.thumbnailData = null;
+      this.thumbnailImage = null;
     }
   }
 

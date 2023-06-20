@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
-import Web3 from "web3";
-import { Blockchain } from "../../../../blockchain";
+import { Blockchain } from 'src/blockchain';
+import CryptoBoys from 'src/abis/CryptoBoys.json';
 
 @Component({
   selector: 'app-contract-details',
@@ -12,17 +12,23 @@ export class ContractDetailsComponent implements OnInit{
   constructor(
   ) { 
     this.blockchain = new Blockchain();
-    this.blockchain.connectToMetamask();
-    this.metamaskConnected = true;
   }
 
   account: string|null = '';
   account_balance: any = 0;
   metamaskConnected: boolean = false;
+  contractDeployed: boolean = false;
+  network_id: string;
+  contract_address: string|null;
 
   async ngOnInit(): Promise<void> {
+    this.blockchain.connectToMetamask();
+    this.metamaskConnected = true;
     await this.getAccountAddress();
     await this.fetchBalance();
+    await this.getNetworkId();
+    this.getContractAddress();
+    await this.hasContractDeployed();
   }
   connectToMetamask(){
     this.blockchain.connectToMetamask();
@@ -33,5 +39,19 @@ export class ContractDetailsComponent implements OnInit{
   }
   async getAccountAddress(){
     this.account = await this.blockchain.getAccountAddress();
+  }
+  async getNetworkId(){
+    this.network_id = await this.blockchain.getNetworkID();
+  }
+  async hasContractDeployed(){
+    let hasDeployed = await this.blockchain.hasContractDeployed(this.network_id, CryptoBoys);
+    if(hasDeployed){
+      this.contractDeployed = true;
+    }else{
+      this.contractDeployed = false;
+    }
+  }
+  getContractAddress(){
+    this.contract_address = this.blockchain.getContractAddress(this.network_id, CryptoBoys);
   }
 }

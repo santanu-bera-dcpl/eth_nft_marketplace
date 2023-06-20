@@ -1,0 +1,14 @@
+.nftListContainer{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    justify-content: space-between;
+}
+.nftListContainer>div{
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+.nftCard{
+    flex-basis: 200px;
+    height: 250px;
+}

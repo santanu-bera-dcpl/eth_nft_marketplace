@@ -62,4 +62,20 @@ export class NftApiService {
       headers: { "Content-Type": `multipart/form-data` },
     });
   }
+
+  public_list(current_page: number, items_per_page: number) {
+    let url = environment.API_ENDPOINT + "nft/public_list?";
+    if(current_page){
+      url = url + "pageNum=" + current_page + "&";
+    }
+    if(items_per_page){
+      url = url + "perPage=" + items_per_page;
+    }
+    const config = {
+      method: 'get',
+      url: url
+    };
+    
+    return axios(config);
+  }
 }

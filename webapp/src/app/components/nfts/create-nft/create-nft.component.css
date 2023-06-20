@@ -36,3 +36,7 @@
 .upload_nft .file-icon{
     margin-right: 15px !important;
 }
+.thumbnailImageViewer img{
+    width: 200px;
+    height: 150px;
+}
