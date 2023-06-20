@@ -32,8 +32,6 @@ contract CryptoBoys is ERC721 {
   mapping(uint256 => CryptoBoy) public allCryptoBoys;
   // check if token name exists
   mapping(string => bool) public tokenNameExists;
-  // check if color exists
-  mapping(string => bool) public colorExists;
   // check if token URI exists
   mapping(string => bool) public tokenURIExists;
 
@@ -44,7 +42,7 @@ contract CryptoBoys is ERC721 {
   }
 
   // mint a new crypto boy
-  function mintCryptoBoy(string memory _name, string memory _tokenURI, uint256 _price, string[] calldata _colors) external {
+  function mintCryptoBoy(string memory _name, string memory _tokenURI, uint256 _price) external {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0));
     // increment counter
@@ -52,10 +50,6 @@ contract CryptoBoys is ERC721 {
     // check if a token exists with the above token id => incremented counter
     require(!_exists(cryptoBoyCounter));
 
-    // loop through the colors passed and check if each colors already exists or not
-    for(uint i=0; i<_colors.length; i++) {
-      require(!colorExists[_colors[i]]);
-    }
     // check if the token URI already exists or not
     require(!tokenURIExists[_tokenURI]);
     // check if the token name already exists or not
@@ -66,10 +60,6 @@ contract CryptoBoys is ERC721 {
     // set token URI (bind token id with the passed in token URI)
     _setTokenURI(cryptoBoyCounter, _tokenURI);
 
-    // loop through the colors passed and make each of the colors as exists since the token is already minted
-    for (uint i=0; i<_colors.length; i++) {
-      colorExists[_colors[i]] = true;
-    }
     // make passed token URI as exists
     tokenURIExists[_tokenURI] = true;
     // make token name passed as exists

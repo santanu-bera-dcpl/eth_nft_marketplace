@@ -1,5 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import Web3 from "web3";
+import { Blockchain } from "../../../../blockchain";
 
 @Component({
   selector: 'app-contract-details',
@@ -7,43 +8,30 @@ import Web3 from "web3";
   styleUrls: ['./contract-details.component.css']
 })
 export class ContractDetailsComponent implements OnInit{
+  blockchain: Blockchain;
   constructor(
-  ) { }
+  ) { 
+    this.blockchain = new Blockchain();
+    this.blockchain.connectToMetamask();
+    this.metamaskConnected = true;
+  }
 
-  account: string = '';
+  account: string|null = '';
   account_balance: any = 0;
   metamaskConnected: boolean = false;
 
   async ngOnInit(): Promise<void> {
-    this.loadWeb3();
-    await this.connectToMetamask();
-    await this.getAccounts();
+    await this.getAccountAddress();
     await this.fetchBalance();
   }
-  async fetchBalance(){
-    let accountBalance = await window.web3.eth.getBalance(this.account);
-    accountBalance = window.web3.utils.fromWei(accountBalance, "Ether");
-    this.account_balance = (Math.round(accountBalance * 10000) / 10000).toFixed(4);
-  }
-  async connectToMetamask(){
-    await window.ethereum.enable();
+  connectToMetamask(){
+    this.blockchain.connectToMetamask();
     this.metamaskConnected = true;
   }
-  async getAccounts(){
-    let accounts = await window.web3.eth.getAccounts();
-    if(accounts.length){
-      this.account = accounts[0];
-    }
+  async fetchBalance(){
+    this.account_balance = await this.blockchain.fetchBalance(this.account);
   }
-  loadWeb3(){
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-    } else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider);
-    } else {
-      window.alert(
-        "Non-Ethereum browser detected. You should consider trying MetaMask!"
-      );
-    }
-  };
+  async getAccountAddress(){
+    this.account = await this.blockchain.getAccountAddress();
+  }
 }
