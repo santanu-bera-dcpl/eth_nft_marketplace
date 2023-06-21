@@ -19,3 +19,13 @@ npm run dev
 cd C:\repos\eth_nft_marketplace\webapp
 ng serve
 ```
+
+# Compile your contract
+```bash
+truffle compile
+```
+
+# Deploy your Contract
+```bash
+truffle migrate
+```

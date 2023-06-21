@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   API_ENDPOINT: 'http://127.0.0.1:5050/',
   NFT_IMAGE_PATH: "http://127.0.0.1:5050/images/nfts/",
-  NFT_THUMBNAIL_PATH: "http://127.0.0.1:5050/images/thumbnails/"
+  NFT_THUMBNAIL_PATH: "http://127.0.0.1:5050/images/thumbnails/",
+  NFT_TOKEN_URL: "http://127.0.0.1:4200/marketplace/nft-details/"
 };
 
 /*

@@ -15,6 +15,7 @@ import CryptoBoys from 'src/abis/CryptoBoys.json';
 })
 export class NftListComponent implements OnInit {
 
+  account: string|null = '';
   blockchain: Blockchain;
   nftList: any[] = [];
   nft_details_modal_open: boolean = false;
@@ -163,25 +164,30 @@ export class NftListComponent implements OnInit {
     this.current_page = Number(pageItem);
     this.getNFTList(this.current_page);
   }
+  async getAccountAddress(){
+    this.account = await this.blockchain.getAccountAddress();
+  }
   async mintNFT(){
     this.minting = true;
     this.minting_button_disabled = true;
     let contract = await this.blockchain.getContractInstance(CryptoBoys);
 
     if(!contract){
-      this.minting = true;
-      this.minting_button_disabled = true;
+      this.minting = false;
+      this.minting_button_disabled = false;
       this.toastr.error('Contract not found !');
     }
 
-    // // Get NFT Details --
-    // contract.methods.mintCryptoBoy(name, tokenURI, price, colorsArray)
-    //   .send({ from: this.state.accountAddress })
-    //   .on("confirmation", () => {
-    //       localStorage.setItem(this.state.accountAddress, new Date().getTime());
-    //       this.setState({ loading: false });
-    //       window.location.reload();
-    //   });
+    // Get NFT Details --
+    console.log(this.selected_nft);
+    let name: string = this.selected_nft.title;
+    let tokenURI: string = environment.NFT_TOKEN_URL + this.selected_nft.internalId;
+    let price: number = this.selected_nft.price;
+    contract.methods.mintCryptoBoy(name, tokenURI, price)
+      .send({ from: this.account })
+      .on("confirmation", () => {
+      alert("Minted");
+    });
     // return;
     // let formData = new FormData();
     // formData.append("id", this.selected_nft.internalId);
