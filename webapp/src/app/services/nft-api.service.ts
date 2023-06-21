@@ -54,12 +54,11 @@ export class NftApiService {
 
   mint(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/mint";
-
     return axios({
       method: "post",
       url: url,
       data: formData,
-      headers: { "Content-Type": `multipart/form-data` },
+      headers: { "Content-Type": `application/json` },
     });
   }
 

@@ -36,6 +36,15 @@ let nftSchema = new mongoose.Schema(
     minted: {
       type: Boolean,
       default: false
+    },
+    currentOwnerAddress: {
+      type: String
+    },
+    tokenId: {
+      type: Number
+    },
+    tokenURI: {
+      type: String
     }
   },
   { timestamps: true }

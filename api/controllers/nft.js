@@ -217,8 +217,39 @@ export const details = async (req, res) => {
 }
 
 export const mint = async (req, res) => {
-    try { 
-        return res.status(200).json({has_error: false, message: "NFT successfully minted!"});
+    try {
+        let internalId = req.body.internalId;
+        let tokenId = req.body.tokenId;
+        let accountAddress = req.body.accountAddress;
+        let tokenURI = req.body.tokenURI;
+
+        if(!internalId){
+            return res.status(400).json({has_error: true, message: "Please provide nft ID!"});
+        }
+        if(!tokenId){
+            return res.status(400).json({has_error: true, message: "Please provide token ID!"});
+        }
+        if(!accountAddress){
+            return res.status(400).json({has_error: true, message: "Please provide account address!"});
+        }
+        if(!tokenURI){
+            return res.status(400).json({has_error: true, message: "Please provide token URL !"});
+        }
+
+        // Update NFT --
+        await NFTModel.findOneAndUpdate({
+            internalId: internalId 
+         },{
+            tokenId: tokenId,
+            currentOwnerAddress: accountAddress,
+            status: NFT_STATUS.PUBLISHED,
+            minted: true,
+            tokenURI: tokenURI
+        });
+
+        let nft = await NFTModel.findOne({internalId: internalId});
+
+        return res.status(200).json({has_error: false, message: "NFT updated!", nft: nft});
     }catch (err) {
 		console.log(err);
 		return res.status(400).json({has_error: true, message: err.message});
@@ -228,7 +259,8 @@ export const mint = async (req, res) => {
 export const public_list = async (req, res) => {
     try {
         let condition = {
-            'status': {$ne : NFT_STATUS.TRASHED}
+            'status': NFT_STATUS.PUBLISHED,
+            'minted': true
         };
         const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
         const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;

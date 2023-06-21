@@ -86,10 +86,9 @@ export class Blockchain{
         let totalTokenMinted: number = await contract.methods.getNumberOfTokensMinted().call();
         return new Promise((resolve, reject)=>{
             try{
-                console.log(accountAddress, name, tokenURI, price, totalTokenMinted);
                 contract.methods.mintCryptoBoy(name, tokenURI, price).send({ from: accountAddress }).on("confirmation", () => {
                     resolve({
-                        'tokenId': totalTokenMinted + 1,
+                        'tokenId': Number(totalTokenMinted) + 1,
                         'accountAddress': accountAddress
                     });
                 });

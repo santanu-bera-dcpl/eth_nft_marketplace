@@ -76,6 +76,30 @@
         </div>
         <div class="infoSection">
           <div class="infoSectionHeader">
+            Owner
+          </div>
+          <div class="infoSectionContent address_format">
+            {{ selected_nft.currentOwnerAddress }}
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Token ID
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.tokenId }}
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Token URL
+          </div>
+          <div class="infoSectionContent">
+            <a href="{{ selected_nft.tokenURI }}" target="_blank">{{ selected_nft.tokenURI }}</a>
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
             Files
           </div>
           <div class="infoSectionContent image_gallery">
@@ -84,9 +108,9 @@
         </div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-success mr-2" (click)="goToEditNFT()">Edit</button>
-      <button class="button is-info mr-2" (click)="mintNFT()" [ngClass]="(minting)? 'is-loading' : ''" [attr.disabled]="minting_button_disabled ? true : null">Mint NFT</button>
-      <button class="button is-danger mr-2" (click)="deleteNFT()">Delete NFT</button>
+      <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-success mr-2" (click)="goToEditNFT()">Edit</button>
+      <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-info mr-2" (click)="mintNFT()" [ngClass]="(minting)? 'is-loading' : ''" [attr.disabled]="minting_button_disabled ? true : null">Mint NFT</button>
+      <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-danger mr-2" (click)="deleteNFT()">Delete NFT</button>
     </footer>
   </div>
 </div>

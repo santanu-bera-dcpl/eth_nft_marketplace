@@ -170,18 +170,41 @@ export class NftListComponent implements OnInit {
   async mintNFT(){
     this.minting = true;
     this.minting_button_disabled = true;
+    let tokenURI: string = environment.NFT_TOKEN_URL + this.selected_nft.internalId;
 
     // Get NFT Details --
     this.blockchain.mintNFT({
       contractABI: CryptoBoys,
       name: this.selected_nft.title,
-      tokenURI: environment.NFT_TOKEN_URL + this.selected_nft.internalId,
+      tokenURI: tokenURI,
       price: this.selected_nft.price,
     }).then((result)=>{
       this.minting = false;
       this.minting_button_disabled = false;
-      this.toastr.success('NFT has been minted successfully!');
-      console.log(result);
+      // Update the database --
+      let formData = new FormData();
+      formData.append("tokenId", result.tokenId);
+      formData.append("accountAddress", result.accountAddress);
+      formData.append("internalId", this.selected_nft.internalId);
+      formData.append("tokenURI", tokenURI);
+
+      this.nftApiService.mint(formData).then(response => {
+        this.minting = false;
+        this.minting_button_disabled = false;
+        // Update local nft --
+        this.selected_nft.currentOwnerAddress = response.data.nft.currentOwnerAddress;
+        this.selected_nft.status = response.data.nft.status;
+        this.selected_nft.tokenId = response.data.nft.tokenId;
+        this.selected_nft.minted = response.data.nft.minted;
+        this.selected_nft.tokenURI = response.data.nft.tokenURI;
+
+        this.toastr.success('NFT has been minted successfully!');
+      }).catch(error => {
+        console.log(error);
+        this.minting = false;
+        this.minting_button_disabled = false;
+        this.toastr.error('Error while saving minted data!');
+      });
     }).catch((err)=>{
       this.minting = false;
       this.minting_button_disabled = false;
