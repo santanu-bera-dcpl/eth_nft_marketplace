@@ -41,10 +41,10 @@ export class NftListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getNFTList(this.current_page);
+    this.getAccountAddress();
     this.image_path = environment.NFT_IMAGE_PATH;
     this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
   }
-
   getNFTList(current_page: number){
     this.nftApiService.list(current_page, this.items_per_page).then(response => {
       this.nftList = response.data.nfts;
@@ -179,7 +179,6 @@ export class NftListComponent implements OnInit {
     }
 
     // Get NFT Details --
-    console.log(this.selected_nft);
     let name: string = this.selected_nft.title;
     let tokenURI: string = environment.NFT_TOKEN_URL + this.selected_nft.internalId;
     let price: number = this.selected_nft.price;
