@@ -170,35 +170,23 @@ export class NftListComponent implements OnInit {
   async mintNFT(){
     this.minting = true;
     this.minting_button_disabled = true;
-    let contract = await this.blockchain.getContractInstance(CryptoBoys);
-
-    if(!contract){
-      this.minting = false;
-      this.minting_button_disabled = false;
-      this.toastr.error('Contract not found !');
-    }
 
     // Get NFT Details --
-    let name: string = this.selected_nft.title;
-    let tokenURI: string = environment.NFT_TOKEN_URL + this.selected_nft.internalId;
-    let price: number = this.selected_nft.price;
-    contract.methods.mintCryptoBoy(name, tokenURI, price)
-      .send({ from: this.account })
-      .on("confirmation", () => {
-      alert("Minted");
-    });
-    // return;
-    // let formData = new FormData();
-    // formData.append("id", this.selected_nft.internalId);
-    // this.nftApiService.mint(formData).then(response => {
-    //   this.minting = false;
-    //   this.minting_button_disabled = false;
-    //   this.toastr.success('NFT has been minted successfully!');     
-    // }).catch(error => {
-    //   console.log(error);
-    //   this.minting = false;
-    //   this.minting_button_disabled = false;
-    //   this.toastr.error('Something went wrong while minting NFT!');
-    // });
+    this.blockchain.mintNFT({
+      contractABI: CryptoBoys,
+      name: this.selected_nft.title,
+      tokenURI: environment.NFT_TOKEN_URL + this.selected_nft.internalId,
+      price: this.selected_nft.price,
+    }).then((result)=>{
+      this.minting = false;
+      this.minting_button_disabled = false;
+      this.toastr.success('NFT has been minted successfully!');
+      console.log(result);
+    }).catch((err)=>{
+      this.minting = false;
+      this.minting_button_disabled = false;
+      this.toastr.error('Error while minting NFT!');
+      console.log(err);
+    })
   }
 }

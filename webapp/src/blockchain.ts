@@ -74,4 +74,28 @@ export class Blockchain{
         }
         return 0;
     }
+    async mintNFT(params: any): Promise<any>{
+        let {
+            contractABI,
+            name,
+            tokenURI,
+            price
+        } = params;
+        let contract: any = await this.getContractInstance(contractABI);
+        let accountAddress = await this.getAccountAddress();
+        let totalTokenMinted: number = await contract.methods.getNumberOfTokensMinted().call();
+        return new Promise((resolve, reject)=>{
+            try{
+                console.log(accountAddress, name, tokenURI, price, totalTokenMinted);
+                contract.methods.mintCryptoBoy(name, tokenURI, price).send({ from: accountAddress }).on("confirmation", () => {
+                    resolve({
+                        'tokenId': totalTokenMinted + 1,
+                        'accountAddress': accountAddress
+                    });
+                });
+            }catch(err){
+                reject(null);
+            }
+        })
+    }
 }
