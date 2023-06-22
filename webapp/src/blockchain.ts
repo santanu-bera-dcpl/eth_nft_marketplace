@@ -1,10 +1,18 @@
+import { async } from "@angular/core/testing";
 import Web3 from "web3";
 
 export class Blockchain{
-    constructor(){
-        this.loadWeb3();
+    contractABI: any;
+    contractInstance: any;
+    constructor(contractABI: any){
+        this.contractABI = contractABI;
+        this.__initialize();
     }
-    async loadWeb3(): Promise<boolean>{
+    private async __initialize(){
+        this.loadWeb3();
+        this.contractInstance = await this.getContractInstance();
+    }
+    loadWeb3(): boolean{
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum);
             return true;
@@ -21,14 +29,12 @@ export class Blockchain{
     async getNetworkID(): Promise<string>{
         return await window.web3.eth.net.getId();
     }
-    async hasContractDeployed(networkId: string, contractABI: any): Promise<boolean>{
-        if(!networkId){
-            return false;
-        }
-        let networks: any = contractABI.networks;
+    async hasContractDeployed(): Promise<boolean>{
+        let networkId: string = await this.getNetworkID();
+        let networks: any = this.contractABI.networks;
         const networkData: any = networks[networkId];
         if(networkData){
-            const contractInstance = new window.web3.eth.Contract(contractABI.abi, networkData.address);
+            const contractInstance = new window.web3.eth.Contract(this.contractABI.abi, networkData.address);
             if (contractInstance){
                 return true;
             }else{
@@ -38,24 +44,19 @@ export class Blockchain{
             return false;
         }
     }
-    async getContractInstance(contractABI: any): Promise<any>{
-        let network_id = await this.getNetworkID();
-        if(!network_id){
-            return null;
-        }
-        let networks: any = contractABI.networks;
-        const networkData: any = networks[network_id];
+    async getContractInstance(): Promise<any>{
+        let networkId: string = await this.getNetworkID();
+        let networks: any = this.contractABI.networks;
+        const networkData: any = networks[networkId];
         if(networkData){
-            return new window.web3.eth.Contract(contractABI.abi, networkData.address);
+            return new window.web3.eth.Contract(this.contractABI.abi, networkData.address);
         }else{
             return null;
         }
     }
-    getContractAddress(networkId: string, contractABI: any): string|null{
-        if(!networkId){
-            return null;
-        }
-        let networks: any = contractABI.networks;
+    async getContractAddress(): Promise<string|null>{
+        let networkId: string = await this.getNetworkID();
+        let networks: any = this.contractABI.networks;
         const networkData: any = networks[networkId];
         return networkData.address;
     }
@@ -74,19 +75,20 @@ export class Blockchain{
         }
         return 0;
     }
+    async getNumberOfTokensMinted(): Promise<number>{
+        return await this.contractInstance.methods.getNumberOfTokensMinted().call();
+    }
     async mintNFT(params: any): Promise<any>{
         let {
-            contractABI,
             name,
             tokenURI,
             price
         } = params;
-        let contract: any = await this.getContractInstance(contractABI);
         let accountAddress = await this.getAccountAddress();
-        let totalTokenMinted: number = await contract.methods.getNumberOfTokensMinted().call();
+        let totalTokenMinted: number = await this.getNumberOfTokensMinted();
         return new Promise((resolve, reject)=>{
             try{
-                contract.methods.mintCryptoBoy(name, tokenURI, price).send({ from: accountAddress }).on("confirmation", () => {
+                this.contractInstance.methods.mintCryptoBoy(name, tokenURI, price).send({ from: accountAddress }).on("confirmation", () => {
                     resolve({
                         'tokenId': Number(totalTokenMinted) + 1,
                         'accountAddress': accountAddress
@@ -96,5 +98,39 @@ export class Blockchain{
                 reject(null);
             }
         })
+    }
+    async buyNFT(tokenId: number, price: number): Promise<string>{
+        return new Promise(async (resolve, reject)=> {
+            try{
+                let accountAddress = await this.getAccountAddress();
+                this.contractInstance.methods.buyToken(tokenId).send({ from: accountAddress, value: price }).on("confirmation", async () => {
+                    // Purchase successful --
+                    // Get Owner by tokenID --
+                    let currentOwnerAddress = await this.getTokenOwner(tokenId);
+                    resolve(currentOwnerAddress);
+                });
+            }catch(error){
+                console.log(error);
+                reject(error);
+            }
+        });
+    }
+    async getTokenOwner(tokenId: number): Promise<string>{
+        return new Promise(async (resolve, reject)=> {
+            try{
+                let result = await this.contractInstance.methods.getTokenOwner(tokenId).call();
+                console.log(result);
+            }catch(error){
+                console.log(error);
+                reject(error);
+            }
+        });
+    }
+    ethToWei(value: number){
+        if(window.web3){
+            return window.web3.utils.toWei(value.toString(), 'ether');
+        }else{
+            return null;
+        }
     }
 }

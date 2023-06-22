@@ -11,7 +11,7 @@ export class ContractDetailsComponent implements OnInit{
   blockchain: Blockchain;
   constructor(
   ) { 
-    this.blockchain = new Blockchain();
+    this.blockchain = new Blockchain(CryptoBoys);
   }
 
   account: string|null = '';
@@ -27,7 +27,7 @@ export class ContractDetailsComponent implements OnInit{
     await this.getAccountAddress();
     await this.fetchBalance();
     await this.getNetworkId();
-    this.getContractAddress();
+    await this.getContractAddress();
     await this.hasContractDeployed();
   }
   connectToMetamask(){
@@ -44,14 +44,14 @@ export class ContractDetailsComponent implements OnInit{
     this.network_id = await this.blockchain.getNetworkID();
   }
   async hasContractDeployed(){
-    let hasDeployed = await this.blockchain.hasContractDeployed(this.network_id, CryptoBoys);
+    let hasDeployed = await this.blockchain.hasContractDeployed();
     if(hasDeployed){
       this.contractDeployed = true;
     }else{
       this.contractDeployed = false;
     }
   }
-  getContractAddress(){
-    this.contract_address = this.blockchain.getContractAddress(this.network_id, CryptoBoys);
+  async getContractAddress(){
+    this.contract_address = await this.blockchain.getContractAddress();
   }
 }

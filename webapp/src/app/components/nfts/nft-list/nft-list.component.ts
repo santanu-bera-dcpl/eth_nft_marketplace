@@ -36,7 +36,7 @@ export class NftListComponent implements OnInit {
     private _router: Router,
     private _lightbox: Lightbox
   ) { 
-    this.blockchain = new Blockchain();
+    this.blockchain = new Blockchain(CryptoBoys);
   }
 
   ngOnInit(): void {
@@ -174,7 +174,6 @@ export class NftListComponent implements OnInit {
 
     // Get NFT Details --
     this.blockchain.mintNFT({
-      contractABI: CryptoBoys,
       name: this.selected_nft.title,
       tokenURI: tokenURI,
       price: this.selected_nft.price,

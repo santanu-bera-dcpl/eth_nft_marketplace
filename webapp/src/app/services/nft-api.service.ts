@@ -77,4 +77,22 @@ export class NftApiService {
     
     return axios(config);
   }
+
+  usdToEthExchangeRate(): Promise<number>{
+    return new Promise((resolve, reject)=>{
+      let url = "https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH";
+      const config = {
+        method: 'get',
+        url: url
+      };   
+      axios(config).then(response => {
+        if(response.data && response.data["ETH"]){
+          resolve(response.data["ETH"]);
+        }
+      }).catch(error => {
+        console.log(error);
+        reject(error);
+      });
+    });
+  }
 }

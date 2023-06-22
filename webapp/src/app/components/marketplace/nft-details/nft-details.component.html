@@ -11,11 +11,12 @@
         </p>
         <p>
             <b>Price: </b>
-            <span>{{ nftDetails.price }} USD</span>
+            <span>{{ nftDetails.price }} USD ({{ usdToEth(nftDetails.price) }} ETH)</span>
         </p>
         <p>
           <b>Current Owner Address: </b>
           <span>{{ nftDetails.currentOwnerAddress }}</span>
+          <b class="ml-3" *ngIf="account_address == nftDetails.currentOwnerAddress">(You)</b>
         </p>
         <p>
           <b>Token ID: </b>
@@ -40,7 +41,7 @@
             </div>
         </div>
         <div class="purchase_button">
-            <button class="button is-link" (click)="purchaseNFT()">Purchase NFT</button>
+            <button *ngIf="account_address !== nftDetails.currentOwnerAddress" [attr.disabled]="purchase_button_is_disabled ? true : null" [ngClass]="(purchase_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="purchaseNFT()">Purchase NFT</button>
         </div>
     </div>
 </div>
