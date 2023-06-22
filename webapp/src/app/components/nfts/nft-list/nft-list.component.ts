@@ -89,6 +89,8 @@ export class NftListComponent implements OnInit {
       return "Drafted";
     }else if(status === NFT_STATUS.PUBLISHED){
       return "Published";
+    }else if(status === NFT_STATUS.UNPUBLISHED){
+      return "Unpublished";
     }else if(status === NFT_STATUS.TRASHED){
       return "Trashed";
     }else{

@@ -28,7 +28,8 @@ import {
     mint,
     public_list,
     completePurchase,
-    getMyNFTs
+    getMyNFTs,
+    updateSaleStatus
 } from "../controllers/nft.js";
 
 router.post(
@@ -60,6 +61,11 @@ router.post(
 router.post(
   "/complete-purchase",
   completePurchase
+);
+
+router.post(
+  "/update-sale-status",
+  updateSaleStatus
 );
 
 router.get(

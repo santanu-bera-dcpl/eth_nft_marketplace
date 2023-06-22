@@ -126,6 +126,45 @@ export class Blockchain{
             }
         });
     }
+    async getNFTDetailsByTokenID(tokenId: number){
+        return new Promise(async (resolve, reject)=> {
+            try{
+                let nftDetails = await this.contractInstance.methods.allCryptoBoys(tokenId).call();
+                let data = {
+                    "currentOwner" : nftDetails.currentOwner,
+                    "forSale" : nftDetails.forSale,
+                    "mintedBy" : nftDetails.mintedBy,
+                    "numberOfTransfers" : nftDetails.numberOfTransfers,
+                    "previousOwner" : nftDetails.previousOwner,
+                    "price" : nftDetails.price,
+                    "tokenId" : nftDetails.tokenId,
+                    "tokenName" : nftDetails.tokenName,
+                    "tokenURI" : nftDetails.tokenURI
+                };
+                resolve(data);
+            }catch(error){
+                console.log(error);
+                reject(error);
+            }
+        });
+    }
+    async turnOffSell(tokenId: number): Promise<any>{
+        return new Promise(async (resolve, reject)=> {
+            try{
+                let accountAddress = await this.getAccountAddress();
+                this.contractInstance.methods.toggleForSale(tokenId).send({ from: accountAddress }).on("confirmation", async () => {
+                    // Verify that sell is off --
+                    // Get nft data from blockchain --
+                    let nftDetails = await this.getNFTDetailsByTokenID(tokenId);
+                    console.log(nftDetails);
+                    resolve(nftDetails);
+                });
+            }catch(error){
+                console.log(error);
+                reject(error);
+            }
+        });
+    }
     ethToWei(value: number){
         if(window.web3){
             return window.web3.utils.toWei((Math.round(value * 1000000) / 1000000).toFixed(8), 'ether');

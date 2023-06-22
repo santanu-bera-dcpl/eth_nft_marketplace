@@ -45,6 +45,10 @@ let nftSchema = new mongoose.Schema(
     },
     tokenURI: {
       type: String
+    },
+    forSale: {
+      type: Boolean,
+      default: true
     }
   },
   { timestamps: true }

@@ -6,5 +6,6 @@ export const PAGINATION = {
 export const NFT_STATUS = {
     DRAFTED: 'drafted',
     PUBLISHED: 'published',
+    UNPUBLISHED: 'unpublished',
     TRASHED: 'trashed'
 };

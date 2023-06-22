@@ -18,9 +18,12 @@ export class NftDetailsComponent {
   nftDetails: any = null;
   exchangeRate: number;
   blockchain: Blockchain;
+  account_address: string|null;
+
   purchase_button_is_loading: boolean = false;
   purchase_button_is_disabled: boolean = false;
-  account_address: string|null;
+  sell_button_is_loading: boolean = false;
+  sell_button_is_disabled: boolean = false;
 
   constructor(
     private nftApiService: NftApiService,
@@ -48,7 +51,6 @@ export class NftDetailsComponent {
     };
     this.nftApiService.details(formData).then(response => {
       this.nftDetails = response.data.details;
-      console.log(this.nftDetails);
     }).catch(error => {
       console.log(error);
       this.toastr.error('Something went wrong while retrieving NFT!');
@@ -90,7 +92,6 @@ export class NftDetailsComponent {
       this.purchase_button_is_disabled = false;
       return;
     }
-    console.log(buyerAddress);
     // Update the db --
     let formData = new FormData();
     formData.append("accountAddress", buyerAddress);
@@ -104,10 +105,40 @@ export class NftDetailsComponent {
 
       this.toastr.success('You have successfully purchased this NFT!');
     }).catch(error => {
-      console.log(error);
       this.purchase_button_is_loading = false;
       this.purchase_button_is_disabled = false;
       this.toastr.error('Something went wrong while updating NFT!');
     });
+  }
+  async turnOffSell(){
+    this.sell_button_is_disabled = true;
+    this.sell_button_is_loading = true;
+    try{
+      let newNFTData = await this.blockchain.turnOffSell(this.nftDetails.tokenId);
+      if(newNFTData && newNFTData.forSale){
+        // Update database --
+        let formData = new FormData();
+        formData.append("internalId", this.nftDetails.internalId);
+        formData.append("status", "false");
+        this.nftApiService.updateSaleStatus(formData).then(response => {
+          this.nftDetails.forSale = response.data.nft.forSale;
+          this.toastr.success('Sale has been turned off successfully !');
+          this.sell_button_is_disabled = false;
+          this.sell_button_is_loading = false;
+        }).catch(error => {
+          console.log(error);
+          this.sell_button_is_disabled = false;
+          this.sell_button_is_loading = false;
+          this.toastr.error('Something went wrong while updating sale status !');
+        });
+      }
+    }catch(error){
+      this.sell_button_is_disabled = false;
+      this.sell_button_is_loading = false;
+      this.toastr.error('Something went wrong while turning off sell !');
+    }
+  }
+  async turnOnSell(){
+
   }
 }
