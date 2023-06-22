@@ -25,7 +25,8 @@
     cursor: pointer;
 }
 .pagination_container{
-    width: 60%;
+    display: flex;
+    justify-content: center;
     margin: auto;
 }
 .pagination-list{

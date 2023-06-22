@@ -2,12 +2,28 @@
     <div class="box" *ngIf="nftDetails">
         <h1 class="has-text-centered is-size-3">NFT Details</h1>
         <p>
+          <b>Internal ID: </b>
+          <span>{{ nftDetails.internalId }}</span>
+        </p>
+        <p>
             <b>Title: </b>
             <span>{{ nftDetails.title }}</span>
         </p>
         <p>
             <b>Price: </b>
             <span>{{ nftDetails.price }} USD</span>
+        </p>
+        <p>
+          <b>Current Owner Address: </b>
+          <span>{{ nftDetails.currentOwnerAddress }}</span>
+        </p>
+        <p>
+          <b>Token ID: </b>
+          <span>{{ nftDetails.tokenId }}</span>
+        </p>
+        <p>
+          <b>Token URI: </b>
+          <span><a href="{{ nftDetails.tokenURI }}">{{ nftDetails.tokenURI }}</a></span>
         </p>
         <div class="uploaded_files" *ngIf="nftDetails.files">
             <h2>NFTs ({{ nftDetails.files ? nftDetails.files.length : 0 }})</h2>

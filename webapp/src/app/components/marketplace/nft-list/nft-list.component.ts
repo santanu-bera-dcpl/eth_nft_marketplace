@@ -10,7 +10,7 @@ import { NftApiService } from 'src/app/services/nft-api.service';
 })
 export class NftListComponent {
   nftList: any[] = [];
-  items_per_page: number = 5;
+  items_per_page: number = 2;
   current_page: number = 1;
   total_items: number;
   pagination_items: any[] = [];
