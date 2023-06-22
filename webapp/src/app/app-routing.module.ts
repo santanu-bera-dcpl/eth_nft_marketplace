@@ -5,6 +5,7 @@ import { CreateNftComponent } from './components/nfts/create-nft/create-nft.comp
 import { NftListComponent } from './components/nfts/nft-list/nft-list.component';
 import { ContractDetailsComponent } from './components/contract/contract-details/contract-details.component';
 import { NftListComponent as MarketplaceNftListComponent } from './components/marketplace/nft-list/nft-list.component';
+import { MyNftsComponent } from './components/marketplace/my-nfts/my-nfts.component';
 import { NftDetailsComponent } from './components/marketplace/nft-details/nft-details.component';
 
 const routes: Routes = [
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'nft/list', component: NftListComponent },
   { path: 'contract/details', component: ContractDetailsComponent },
   { path: 'marketplace/nft-list', component: MarketplaceNftListComponent },
-  { path: 'marketplace/nft-details/:id', component: NftDetailsComponent }
+  { path: 'marketplace/nft-details/:id', component: NftDetailsComponent },
+  { path: 'marketplace/my-nfts', component: MyNftsComponent }
 ];
 
 @NgModule({

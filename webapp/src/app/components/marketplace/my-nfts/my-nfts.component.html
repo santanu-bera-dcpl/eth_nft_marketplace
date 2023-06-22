@@ -1,0 +1,29 @@
+<div class="nftListContainer">
+    <div class="nftCard box" *ngFor="let nft of nftList; index as i;">
+        <img [src]="thumbnail_path + nft.thumbnail" alt="">
+        <p>{{ nft.title }}</p>
+        <p><b>Price</b> : {{ nft.price }} USD</p>
+        <p><b>Total NFTs</b> : {{ nft.files ? nft.files.length : 0 }}</p>
+        <div class="spacer"></div>
+        <div>
+            <a class="button is-link" (click)="goToNFTDetailsPage(nft)"><i class="fa-solid fa-eye mr-3"></i>Details</a>
+        </div>
+    </div>
+</div>
+
+<div class="pagination_container is-centered">
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <ng-template ngFor let-pageItem [ngForOf]="pagination_items">
+        <a class="pagination-previous" (click)="goPrev()" *ngIf="pageItem === '<'">Previous</a>
+        <a class="pagination-next" (click)="goNext()" *ngIf="pageItem === '>'">Next page</a>
+      </ng-template>
+      
+      <ul class="pagination-list">
+        <ng-template ngFor let-pageItem [ngForOf]="pagination_items">
+          <li *ngIf="isNumber(pageItem)" (click)="goToPage(pageItem)"><a class="pagination-link">{{ pageItem }}</a></li>
+          <li *ngIf="pageItem === '...'"><span class="pagination-ellipsis">&hellip;</span></li>
+          <li *ngIf="!isNumber(pageItem) && pageItem.indexOf('*') === 0"><a class="pagination-link is-current">{{ pageItem.charAt(1) }}</a></li>          
+        </ng-template>        
+      </ul>
+    </nav>
+</div>

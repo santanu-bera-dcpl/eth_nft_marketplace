@@ -27,7 +27,8 @@ import {
     details,
     mint,
     public_list,
-    completePurchase
+    completePurchase,
+    getMyNFTs
 } from "../controllers/nft.js";
 
 router.post(
@@ -64,6 +65,11 @@ router.post(
 router.get(
   "/public_list",
   public_list
+);
+
+router.get(
+  "/my_nfts",
+  getMyNFTs
 );
 
 export const nftRoutes = router;

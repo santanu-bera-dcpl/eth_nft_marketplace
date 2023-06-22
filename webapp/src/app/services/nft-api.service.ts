@@ -88,6 +88,25 @@ export class NftApiService {
     return axios(config);
   }
 
+  get_my_nfts(address: string|null, current_page: number, items_per_page: number) {
+    let url = environment.API_ENDPOINT + "nft/my_nfts?";
+    if(address){
+      url = url + "address=" + address + "&";
+    }
+    if(current_page){
+      url = url + "pageNum=" + current_page + "&";
+    }
+    if(items_per_page){
+      url = url + "perPage=" + items_per_page;
+    }
+    const config = {
+      method: 'get',
+      url: url
+    };
+    
+    return axios(config);
+  }
+
   usdToEthExchangeRate(): Promise<number>{
     return new Promise((resolve, reject)=>{
       let url = "https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH";

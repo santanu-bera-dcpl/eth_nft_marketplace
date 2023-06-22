@@ -313,3 +313,29 @@ export const completePurchase = async (req, res) => {
 		return res.status(400).json({has_error: true, message: err.message});
 	}
 }
+
+export const getMyNFTs = async (req, res) => {
+    try {
+        let currentOwnerAddress = req.query.address;
+        let condition = {
+            'currentOwnerAddress': currentOwnerAddress
+        };
+        const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
+        const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
+        const skip = (page - 1) * perPage;
+
+        let allNfts = await NFTModel.aggregate([
+            {
+              $match: condition,
+            },
+            { $skip: skip },
+            { $limit: perPage },
+        ]);
+
+        let totalNFTs = await NFTModel.countDocuments(condition);
+        return res.status(200).json({has_error: false, nfts: allNfts, totalNFTs: totalNFTs});
+    } catch (err) {
+		console.log(err);
+		return res.status(400).json({message: err.message});
+	}
+}
