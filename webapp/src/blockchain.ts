@@ -119,7 +119,7 @@ export class Blockchain{
         return new Promise(async (resolve, reject)=> {
             try{
                 let result = await this.contractInstance.methods.getTokenOwner(tokenId).call();
-                console.log(result);
+                resolve(result);
             }catch(error){
                 console.log(error);
                 reject(error);
@@ -128,7 +128,7 @@ export class Blockchain{
     }
     ethToWei(value: number){
         if(window.web3){
-            return window.web3.utils.toWei(value.toString(), 'ether');
+            return window.web3.utils.toWei((Math.round(value * 1000000) / 1000000).toFixed(8), 'ether');
         }else{
             return null;
         }

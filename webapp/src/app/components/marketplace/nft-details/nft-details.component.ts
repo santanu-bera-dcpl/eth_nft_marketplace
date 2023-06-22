@@ -81,9 +81,33 @@ export class NftDetailsComponent {
     price = this.blockchain.ethToWei(price);
     this.purchase_button_is_loading = true;
     this.purchase_button_is_disabled = true;
-    let result = await this.blockchain.buyNFT(this.nftDetails.tokenId, price);
-    console.log(result);
-    this.purchase_button_is_loading = false;
-    this.purchase_button_is_disabled = false;
+    let buyerAddress: string;
+    try{
+      buyerAddress = await this.blockchain.buyNFT(this.nftDetails.tokenId, price);  
+    }catch(err){
+      this.toastr.error('Something went wrong while buying NFT!');
+      this.purchase_button_is_loading = false;
+      this.purchase_button_is_disabled = false;
+      return;
+    }
+    console.log(buyerAddress);
+    // Update the db --
+    let formData = new FormData();
+    formData.append("accountAddress", buyerAddress);
+    formData.append("internalId", this.nftDetails.internalId);
+    this.nftApiService.completePurchase(formData).then(response => {
+      this.purchase_button_is_loading = false;
+      this.purchase_button_is_disabled = false;
+      // Update local nft --
+      this.nftDetails.currentOwnerAddress = response.data.nft.currentOwnerAddress;
+      this.nftDetails.status = response.data.nft.status;
+
+      this.toastr.success('You have successfully purchased this NFT!');
+    }).catch(error => {
+      console.log(error);
+      this.purchase_button_is_loading = false;
+      this.purchase_button_is_disabled = false;
+      this.toastr.error('Something went wrong while updating NFT!');
+    });
   }
 }

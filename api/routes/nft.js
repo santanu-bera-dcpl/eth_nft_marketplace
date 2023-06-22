@@ -26,7 +26,8 @@ import {
     moveToTrash,
     details,
     mint,
-    public_list
+    public_list,
+    completePurchase
 } from "../controllers/nft.js";
 
 router.post(
@@ -53,6 +54,11 @@ router.get(
 router.post(
   "/mint",
   mint
+);
+
+router.post(
+  "/complete-purchase",
+  completePurchase
 );
 
 router.get(

@@ -281,3 +281,35 @@ export const public_list = async (req, res) => {
 		return res.status(400).json({message: err.message});
 	}
 }
+
+export const completePurchase = async (req, res) => {
+    try {
+        let internalId = req.body.internalId;
+        let accountAddress = req.body.accountAddress;
+
+        if(!internalId){
+            return res.status(400).json({has_error: true, message: "Please provide nft ID!"});
+        }
+        if(!accountAddress){
+            return res.status(400).json({has_error: true, message: "Please provide account address!"});
+        }
+
+        // Update NFT --
+        await NFTModel.findOneAndUpdate({
+            internalId: internalId 
+         },{
+            status: NFT_STATUS.UNPUBLISHED,
+            currentOwnerAddress: accountAddress
+        });
+
+        // Create a Order --
+        // Store current exchange rate --
+
+        let nft = await NFTModel.findOne({internalId: internalId});
+
+        return res.status(200).json({has_error: false, message: "NFT updated!", nft: nft});
+    }catch (err) {
+		console.log(err);
+		return res.status(400).json({has_error: true, message: err.message});
+	}
+}

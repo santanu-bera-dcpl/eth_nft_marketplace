@@ -62,6 +62,16 @@ export class NftApiService {
     });
   }
 
+  completePurchase(formData: FormData){
+    let url = environment.API_ENDPOINT + "nft/complete-purchase";
+    return axios({
+      method: "post",
+      url: url,
+      data: formData,
+      headers: { "Content-Type": `application/json` },
+    });
+  }
+
   public_list(current_page: number, items_per_page: number) {
     let url = environment.API_ENDPOINT + "nft/public_list?";
     if(current_page){
