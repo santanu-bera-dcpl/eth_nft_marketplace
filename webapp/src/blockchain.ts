@@ -1,4 +1,3 @@
-import { async } from "@angular/core/testing";
 import Web3 from "web3";
 
 export class Blockchain{
@@ -148,7 +147,7 @@ export class Blockchain{
             }
         });
     }
-    async turnOffSell(tokenId: number): Promise<any>{
+    async toggleForSale(tokenId: number): Promise<any>{
         return new Promise(async (resolve, reject)=> {
             try{
                 let accountAddress = await this.getAccountAddress();

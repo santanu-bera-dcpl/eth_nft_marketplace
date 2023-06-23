@@ -42,8 +42,8 @@
         </div>
         <div class="purchase_button">
             <button *ngIf="account_address !== nftDetails.currentOwnerAddress" [attr.disabled]="purchase_button_is_disabled ? true : null" [ngClass]="(purchase_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="purchaseNFT()">Purchase NFT</button>
-            <button *ngIf="nftDetails.forSale === true" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="turnOffSell()">Turn off Sell</button>
-            <button *ngIf="nftDetails.forSale === false" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="turnOnSell()">Turn on Sell</button>
+            <button *ngIf="nftDetails.forSale === true" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="toggleForSale()">Turn off Sell</button>
+            <button *ngIf="nftDetails.forSale === false" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="toggleForSale()">Turn on Sell</button>
         </div>
     </div>
 </div>

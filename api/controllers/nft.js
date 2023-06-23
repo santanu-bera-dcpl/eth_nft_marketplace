@@ -322,15 +322,20 @@ export const updateSaleStatus = async (req, res) => {
         if(!internalId){
             return res.status(400).json({has_error: true, message: "Please provide nft ID!"});
         }
-        if(saleStatus === null || saleStatus === undefined){
+        if(!saleStatus){
             return res.status(400).json({has_error: true, message: "Please provide status!"});
+        }
+
+        let status = false;
+        if(saleStatus === "true"){
+            status = true;
         }
 
         // Update NFT --
         await NFTModel.findOneAndUpdate({
             internalId: internalId 
          },{
-            forSale: !!saleStatus
+            forSale: status
         });
 
         // Create a Order --
