@@ -1,10 +1,21 @@
-<div class="list_filter">
-  <div class="field">
-      <div class="control">
-        <input class="input" type="text" placeholder="Internal ID" [(ngModel)]="internal_id">
+<div class="filter_container">
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field mr-3">
+        <div class="control">
+          <input class="input" type="text" placeholder="Internal ID" [(ngModel)]="internal_id">
+        </div>
       </div>
+      <div class="field">
+        <div class="control">
+          <button [attr.disabled]="filter_button_is_disabled ? true : null" [ngClass]="(filter_button_is_loading)? 'is-loading' : ''" class="button is-link is-success mr-3" (click)="filterNftList()">Filter</button>
+          <button [attr.disabled]="reset_filter_button_is_disabled ? true : null" [ngClass]="(reset_filter_button_is_loading)? 'is-loading' : ''" class="button is-link is-danger" (click)="resetFilterNftList()">Reset</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 <table class="table is-fullwidth">
   <thead>
     <tr>
@@ -47,6 +58,14 @@
           </div>
           <div class="infoSectionContent">
             <img class="nftThumbnailInDetails" [src]="thumbnail_path + selected_nft.thumbnail" />
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            Internal ID
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.internalId }}
           </div>
         </div>
         <div class="infoSection">

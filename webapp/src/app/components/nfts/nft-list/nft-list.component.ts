@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { NftApiService } from '../../../services/nft-api.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { NFT_STATUS } from "../../../constant";
+import { NFT_STATUS } from "src/app/constant";
 import { Lightbox } from 'ngx-lightbox';
 import { Blockchain } from 'src/blockchain';
 import CryptoBoys from 'src/abis/CryptoBoys.json';
@@ -32,7 +32,12 @@ export class NftListComponent implements OnInit {
   sell_button_is_disabled: boolean = false;
   publish_button_is_loading: boolean = false;
   publish_button_is_disabled: boolean = false;
+  filter_button_is_loading: boolean = false;
+  filter_button_is_disabled: boolean = false;
+  reset_filter_button_is_loading: boolean = false;
+  reset_filter_button_is_disabled: boolean = false;
   nftStatus: any = NFT_STATUS;
+  internal_id: string = "";
 
   constructor(
     private nftApiService: NftApiService,
@@ -45,13 +50,24 @@ export class NftListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.getAccountAddress();
-    this.getNFTList(this.current_page);
-    
+    this.getNFTList(this.current_page, {});
     this.image_path = environment.NFT_IMAGE_PATH;
     this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
   }
-  getNFTList(current_page: number){
-    this.nftApiService.list(current_page, this.items_per_page, this.account).then(response => {
+  filterNftList(){
+    let filter: any = {
+      internal_id: this.internal_id
+    };
+    this.current_page = 1;
+    this.getNFTList(this.current_page, filter);
+  }
+  resetFilterNftList(){
+    this.internal_id = "";
+    this.current_page = 1;
+    this.getNFTList(this.current_page, {});
+  }
+  getNFTList(current_page: number, filter: any){
+    this.nftApiService.list(current_page, this.items_per_page, this.account, filter).then(response => {
       this.nftList = response.data.nfts;
       this.total_items = response.data.totalNFTs;
       this.pagination_items = this.pagination(current_page, Math.ceil(this.total_items/this.items_per_page));
@@ -80,7 +96,7 @@ export class NftListComponent implements OnInit {
     this.nftApiService.delete(formData).then(response => {
       this.toastr.success('NFT has been deleted successfully!');
       this.closeDetailsModal();
-      this.getNFTList(this.current_page);
+      this.getNFTList(this.current_page, this.getFilterData());
     }).catch(error => {
       console.log(error);
       this.toastr.error('Something went wrong while deleting NFT!');
@@ -161,15 +177,15 @@ export class NftListComponent implements OnInit {
   }
   goPrev(){
     this.current_page = this.current_page - 1;
-    this.getNFTList(this.current_page);
+    this.getNFTList(this.current_page, this.getFilterData());
   }
   goNext(){
     this.current_page = this.current_page + 1;
-    this.getNFTList(this.current_page);
+    this.getNFTList(this.current_page, this.getFilterData());
   }
   goToPage(pageItem: any){
     this.current_page = Number(pageItem);
-    this.getNFTList(this.current_page);
+    this.getNFTList(this.current_page, this.getFilterData());
   }
   async getAccountAddress(){
     this.account = await this.blockchain.getAccountAddress();
@@ -281,5 +297,12 @@ export class NftListComponent implements OnInit {
       this.publish_button_is_loading = false;
       this.toastr.error('Something went wrong while updating NFT status !');
     });
+  }
+  getFilterData(){
+    let filter: any = {};
+    if(this.internal_id){
+      filter.internal_id = this.internal_id;
+    }
+    return filter;
   }
 }

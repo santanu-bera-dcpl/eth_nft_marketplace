@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { NftApiService } from 'src/app/services/nft-api.service';
+import { Blockchain } from 'src/blockchain';
+import CryptoBoys from 'src/abis/CryptoBoys.json';
 
 @Component({
   selector: 'app-nft-list',
@@ -15,19 +17,28 @@ export class NftListComponent {
   total_items: number;
   pagination_items: any[] = [];
   thumbnail_path: string = "";
+  blockchain: Blockchain;
+  account_address: string|null;
 
   constructor(
     private nftApiService: NftApiService,
     private _router: Router,
   ) {
+    this.blockchain = new Blockchain(CryptoBoys);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
+    this.account_address = await this.blockchain.getAccountAddress();
     this.getNFTList(this.current_page);
   }
   getNFTList(current_page: number){
-    this.nftApiService.public_list(current_page, this.items_per_page).then(response => {
+    let formData = {
+      current_page: this.current_page, 
+      items_per_page: this.items_per_page,
+      account_address: this.account_address
+    };
+    this.nftApiService.public_list(formData).then(response => {
       this.nftList = response.data.nfts;
       console.log(this.nftList);
       this.total_items = response.data.totalNFTs;

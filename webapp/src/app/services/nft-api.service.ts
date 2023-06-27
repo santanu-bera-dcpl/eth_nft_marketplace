@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 export class NftApiService {
   constructor() { }
 
-  list(current_page: number, items_per_page: number, account: string|null) {
+  list(current_page: number, items_per_page: number, account: string|null, filter: any) {
     let url = environment.API_ENDPOINT + "nft/list?";
     if(current_page){
       url = url + "pageNum=" + current_page;
@@ -19,14 +19,15 @@ export class NftApiService {
     if(account){
       url = url + "&account=" + account;
     }
+    if(filter && filter.internal_id){
+      url = url + "&internal_id=" + filter.internal_id;
+    }
     const config = {
       method: 'get',
       url: url
     };
-    
     return axios(config);
   }
-
   details(formData: any) {
     let url = environment.API_ENDPOINT + "nft/details/";
     if(formData.id){
@@ -34,10 +35,8 @@ export class NftApiService {
     }
     return axios.get(url);
   }
-
   create(formData: FormData) {
     let url = environment.API_ENDPOINT + "nft/create";
-
     return axios({
       method: "post",
       url: url,
@@ -45,7 +44,6 @@ export class NftApiService {
       headers: { "Content-Type": `multipart/form-data` },
     });
   }
-
   delete(formData: any) {
     let url = environment.API_ENDPOINT + "nft/move-to-trash";
     return axios({
@@ -54,7 +52,6 @@ export class NftApiService {
       data: formData,
     });
   }
-
   mint(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/mint";
     return axios({
@@ -64,7 +61,6 @@ export class NftApiService {
       headers: { "Content-Type": `application/json` },
     });
   }
-
   completePurchase(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/complete-purchase";
     return axios({
@@ -74,7 +70,6 @@ export class NftApiService {
       headers: { "Content-Type": `application/json` },
     });
   }
-
   updateSaleStatus(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/update-sale-status";
     return axios({
@@ -84,7 +79,6 @@ export class NftApiService {
       headers: { "Content-Type": `application/json` },
     });
   }
-
   updateNFTStatus(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/update-nft-status";
     return axios({
@@ -94,23 +88,23 @@ export class NftApiService {
       headers: { "Content-Type": `application/json` },
     });
   }
-
-  public_list(current_page: number, items_per_page: number) {
+  public_list(formData: any) {
     let url = environment.API_ENDPOINT + "nft/public_list?";
-    if(current_page){
-      url = url + "pageNum=" + current_page + "&";
+    if(formData.current_page){
+      url = url + "pageNum=" + formData.current_page;
     }
-    if(items_per_page){
-      url = url + "perPage=" + items_per_page;
+    if(formData.items_per_page){
+      url = url + "&perPage=" + formData.items_per_page;
+    }
+    if(formData.account_address){
+      url = url + "&account_address=" + formData.account_address;
     }
     const config = {
       method: 'get',
       url: url
     };
-    
     return axios(config);
   }
-
   get_my_nfts(address: string|null, current_page: number, items_per_page: number) {
     let url = environment.API_ENDPOINT + "nft/my_nfts?";
     if(address){
@@ -126,10 +120,8 @@ export class NftApiService {
       method: 'get',
       url: url
     };
-    
     return axios(config);
   }
-
   usdToEthExchangeRate(): Promise<number>{
     return new Promise((resolve, reject)=>{
       let url = "https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH";

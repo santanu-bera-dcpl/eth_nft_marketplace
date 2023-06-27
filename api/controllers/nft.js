@@ -150,6 +150,9 @@ export const list = async (req, res) => {
             'status': {$ne : NFT_STATUS.TRASHED}
         };
         condition.mintedBy = req.query.account;
+        if(req.query.internal_id){
+            condition.internalId = req.query.internal_id;
+        }
         const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
         const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
         const skip = (page - 1) * perPage;
@@ -273,6 +276,9 @@ export const public_list = async (req, res) => {
             'status': NFT_STATUS.PUBLISHED,
             'minted': true
         };
+        if(req.query.account_address){
+            condition.currentOwnerAddress = {$ne: req.query.account_address};
+        }
         const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
         const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
         const skip = (page - 1) * perPage;

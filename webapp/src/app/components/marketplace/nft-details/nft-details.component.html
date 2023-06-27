@@ -47,6 +47,10 @@
         </div>
         <div class="purchase_button">
             <button *ngIf="account_address !== nftDetails.currentOwnerAddress" [attr.disabled]="purchase_button_is_disabled ? true : null" [ngClass]="(purchase_button_is_loading)? 'is-loading' : ''" class="button is-link" (click)="purchaseNFT()">Purchase NFT</button>
+            <button *ngIf="account_address === nftDetails.currentOwnerAddress && nftDetails && nftDetails.minted === true && nftDetails.forSale === true" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link is-danger mr-2" (click)="toggleForSale()">Turn off Sell</button>
+            <button *ngIf="account_address === nftDetails.currentOwnerAddress && nftDetails && nftDetails.minted === true && nftDetails.forSale === false" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link is-success mr-2" (click)="toggleForSale()">Turn on Sell</button>
+            <button *ngIf="account_address === nftDetails.currentOwnerAddress && nftDetails && nftDetails.status === nftStatus.UNPUBLISHED && nftDetails.forSale === true" [attr.disabled]="publish_button_is_disabled ? true : null" [ngClass]="(publish_button_is_loading)? 'is-loading' : ''" class="button is-link is-success mr-2" (click)="updateNFTStatus('published')">Publish</button>
+            <button *ngIf="account_address === nftDetails.currentOwnerAddress && nftDetails && nftDetails.status === nftStatus.PUBLISHED && nftDetails.forSale === true" [attr.disabled]="publish_button_is_disabled ? true : null" [ngClass]="(publish_button_is_loading)? 'is-loading' : ''" class="button is-link is-danger mr-2" (click)="updateNFTStatus('unpublished')">Unpublish</button>
         </div>
     </div>
 </div>

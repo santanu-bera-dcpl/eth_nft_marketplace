@@ -1,3 +1,6 @@
+.filter_container{
+    padding: 15px 5px;
+}
 .infoSection{
     display: flex;
     border-bottom: 1px solid #ddd;
