@@ -1,3 +1,10 @@
+<div class="list_filter">
+  <div class="field">
+      <div class="control">
+        <input class="input" type="text" placeholder="Internal ID" [(ngModel)]="internal_id">
+      </div>
+  </div>
+</div>
 <table class="table is-fullwidth">
   <thead>
     <tr>
@@ -68,10 +75,29 @@
         </div>
         <div class="infoSection">
           <div class="infoSectionHeader">
+            Sale Status
+          </div>
+          <div class="infoSectionContent">
+            <span *ngIf="selected_nft.forSale === true" class="has-text-success">Active</span>
+            <span *ngIf="selected_nft.forSale === false" class="has-text-danger">Inactive</span>
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
             Minted
           </div>
           <div class="infoSectionContent">
-            {{ selected_nft.minted ? "Yes" : "No" }}
+            <span *ngIf="selected_nft.minted === true" class="has-text-success">Yes</span>
+            <span *ngIf="selected_nft.minted === false" class="has-text-danger">No</span>
+          </div>
+        </div>
+        <div class="infoSection">
+          <div class="infoSectionHeader">
+            <span *ngIf="selected_nft.minted">Minted By</span>
+            <span *ngIf="!selected_nft.minted">Created By</span>
+          </div>
+          <div class="infoSectionContent">
+            {{ selected_nft.mintedBy }} <b class="ml-3" *ngIf="account == selected_nft.mintedBy">(You)</b>
           </div>
         </div>
         <div class="infoSection">
@@ -79,7 +105,7 @@
             Owner
           </div>
           <div class="infoSectionContent address_format">
-            {{ selected_nft.currentOwnerAddress }}
+            {{ selected_nft.currentOwnerAddress }} <b class="ml-3" *ngIf="account == selected_nft.currentOwnerAddress">(You)</b>
           </div>
         </div>
         <div class="infoSection">
@@ -111,6 +137,10 @@
       <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-success mr-2" (click)="goToEditNFT()">Edit</button>
       <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-info mr-2" (click)="mintNFT()" [ngClass]="(minting)? 'is-loading' : ''" [attr.disabled]="minting_button_disabled ? true : null">Mint NFT</button>
       <button *ngIf="selected_nft && selected_nft.minted === false" class="button is-danger mr-2" (click)="deleteNFT()">Delete NFT</button>
+      <button *ngIf="selected_nft && selected_nft.minted === true && selected_nft.forSale === true" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link is-danger mr-2" (click)="toggleForSale()">Turn off Sell</button>
+      <button *ngIf="selected_nft && selected_nft.minted === true && selected_nft.forSale === false" [attr.disabled]="sell_button_is_disabled ? true : null" [ngClass]="(sell_button_is_loading)? 'is-loading' : ''" class="button is-link is-success mr-2" (click)="toggleForSale()">Turn on Sell</button>
+      <button *ngIf="selected_nft && selected_nft.status === nftStatus.UNPUBLISHED && selected_nft.forSale === true" [attr.disabled]="publish_button_is_disabled ? true : null" [ngClass]="(publish_button_is_loading)? 'is-loading' : ''" class="button is-link is-success mr-2" (click)="updateNFTStatus('published')">Publish</button>
+      <button *ngIf="selected_nft && selected_nft.status === nftStatus.PUBLISHED && selected_nft.forSale === true" [attr.disabled]="publish_button_is_disabled ? true : null" [ngClass]="(publish_button_is_loading)? 'is-loading' : ''" class="button is-link is-danger mr-2" (click)="updateNFTStatus('unpublished')">Unpublish</button>
     </footer>
   </div>
 </div>

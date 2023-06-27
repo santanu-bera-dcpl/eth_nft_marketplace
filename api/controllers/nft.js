@@ -15,6 +15,7 @@ export const create = async (req, res) => {
         let internalId = req.body.id;
         let title = req.body.title;
         let price = req.body.price;
+        let mintedBy = req.body.mintedBy;
         let previous_files = req.body.previous_files; 
 
         let thumbnailImageName = "";
@@ -31,6 +32,10 @@ export const create = async (req, res) => {
         if(!price){
             has_error = true;
             error_message = "Please provide price!";
+        }
+        if(!mintedBy){
+            has_error = true;
+            error_message = "Please provide address of creator!";
         }
         if(has_error){
             return res.status(400).json({has_error: true, message: error_message});
@@ -105,7 +110,8 @@ export const create = async (req, res) => {
                 price: price,
                 thumbnail: thumbnailImageName,
                 description: "",
-                files: files
+                files: files,
+                mintedBy: mintedBy
             });
 
             nft = await NFTModel.findOne({internalId: internalId});
@@ -123,7 +129,8 @@ export const create = async (req, res) => {
                 thumbnail: thumbnailImageName,
                 internalId: v4(),
                 files: files,
-                status: NFT_STATUS.DRAFTED
+                status: NFT_STATUS.DRAFTED,
+                mintedBy: mintedBy
             });
         }
 
@@ -136,9 +143,13 @@ export const create = async (req, res) => {
 
 export const list = async (req, res) => {
     try {
+        if(!req.query.account){
+            return res.status(400).json({has_error: true, message: "Address not found!"});
+        }
         let condition = {
             'status': {$ne : NFT_STATUS.TRASHED}
         };
+        condition.mintedBy = req.query.account;
         const perPage = req.query.perPage ? parseInt(req.query.perPage) : 10;
         const page = req.query.pageNum ? parseInt(req.query.pageNum) : 1;
         const skip = (page - 1) * perPage;
@@ -326,24 +337,76 @@ export const updateSaleStatus = async (req, res) => {
             return res.status(400).json({has_error: true, message: "Please provide status!"});
         }
 
-        let status = false;
+        let data = {
+            forSale: false,
+            status: NFT_STATUS.UNPUBLISHED
+        };
         if(saleStatus === "true"){
-            status = true;
+            data.forSale = true;
+            delete data.status;
         }
 
         // Update NFT --
         await NFTModel.findOneAndUpdate({
             internalId: internalId 
-         },{
-            forSale: status
-        });
-
-        // Create a Order --
-        // Store current exchange rate --
+        }, data);
 
         let nft = await NFTModel.findOne({internalId: internalId});
 
         return res.status(200).json({has_error: false, message: "NFT updated!", nft: nft});
+    }catch (err) {
+		console.log(err);
+		return res.status(400).json({has_error: true, message: err.message});
+	}
+}
+
+export const updateNFTStatus = async (req, res) => {
+    try {
+        let internalId = req.body.internalId;
+        let nftStatus = req.body.status;
+
+        if(!internalId){
+            return res.status(400).json({has_error: true, message: "Please provide nft ID!"});
+        }
+        if(!nftStatus){
+            return res.status(400).json({has_error: true, message: "Please provide status!"});
+        }
+
+        let nft = await NFTModel.findOne({internalId: internalId});
+        if(!nft){
+            return res.status(400).json({has_error: true, message: "NFT not found with the ID: " + internalId});
+        }
+
+        if(nft.forSale === true){
+            // Change Status --
+            let data = {};
+            if(nftStatus === 'published'){
+                data.status = NFT_STATUS.PUBLISHED;
+            }else if(nftStatus === 'unpublished'){
+                data.status = NFT_STATUS.UNPUBLISHED;
+            }
+            // Update NFT --
+            await NFTModel.findOneAndUpdate({
+                internalId: internalId 
+            }, data);
+
+            
+        }else{
+            // Don't publish the NFT --
+            // Change Status --
+            let data = {};
+            if(nftStatus === 'unpublished'){
+                data.status = NFT_STATUS.UNPUBLISHED;
+            }
+            // Update NFT --
+            await NFTModel.findOneAndUpdate({
+                internalId: internalId 
+            }, data);
+        }
+
+        let newNft = await NFTModel.findOne({internalId: internalId});
+
+        return res.status(200).json({has_error: false, message: "NFT updated!", nft: newNft});
     }catch (err) {
 		console.log(err);
 		return res.status(400).json({has_error: true, message: err.message});

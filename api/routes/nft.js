@@ -29,7 +29,8 @@ import {
     public_list,
     completePurchase,
     getMyNFTs,
-    updateSaleStatus
+    updateSaleStatus,
+    updateNFTStatus
 } from "../controllers/nft.js";
 
 router.post(
@@ -76,6 +77,11 @@ router.get(
 router.get(
   "/my_nfts",
   getMyNFTs
+);
+
+router.post(
+  "/update-nft-status",
+  updateNFTStatus
 );
 
 export const nftRoutes = router;

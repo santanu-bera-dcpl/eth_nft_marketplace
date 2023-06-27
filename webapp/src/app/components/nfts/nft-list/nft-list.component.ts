@@ -14,7 +14,6 @@ import CryptoBoys from 'src/abis/CryptoBoys.json';
   styleUrls: ['./nft-list.component.css']
 })
 export class NftListComponent implements OnInit {
-
   account: string|null = '';
   blockchain: Blockchain;
   nftList: any[] = [];
@@ -29,6 +28,11 @@ export class NftListComponent implements OnInit {
   pagination_items: any[] = [];
   minting: boolean = false;
   minting_button_disabled: boolean = false;
+  sell_button_is_loading: boolean = false;
+  sell_button_is_disabled: boolean = false;
+  publish_button_is_loading: boolean = false;
+  publish_button_is_disabled: boolean = false;
+  nftStatus: any = NFT_STATUS;
 
   constructor(
     private nftApiService: NftApiService,
@@ -39,14 +43,15 @@ export class NftListComponent implements OnInit {
     this.blockchain = new Blockchain(CryptoBoys);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.getAccountAddress();
     this.getNFTList(this.current_page);
-    this.getAccountAddress();
+    
     this.image_path = environment.NFT_IMAGE_PATH;
     this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
   }
   getNFTList(current_page: number){
-    this.nftApiService.list(current_page, this.items_per_page).then(response => {
+    this.nftApiService.list(current_page, this.items_per_page, this.account).then(response => {
       this.nftList = response.data.nfts;
       this.total_items = response.data.totalNFTs;
       this.pagination_items = this.pagination(current_page, Math.ceil(this.total_items/this.items_per_page));
@@ -212,5 +217,69 @@ export class NftListComponent implements OnInit {
       this.toastr.error('Error while minting NFT!');
       console.log(err);
     })
+  }
+  async toggleForSale(){
+    this.sell_button_is_disabled = true;
+    this.sell_button_is_loading = true;
+    try{
+      let newNFTData = await this.blockchain.toggleForSale(this.selected_nft.tokenId);
+      if(newNFTData && newNFTData.tokenId){
+        // Update database --
+        let formData = new FormData();
+        let currentStatus = "false";
+        if(newNFTData.forSale === true){
+          currentStatus = "true";
+        }
+        formData.append("internalId", this.selected_nft.internalId);
+        formData.append("status", currentStatus);
+        this.nftApiService.updateSaleStatus(formData).then(response => {
+          this.sell_button_is_disabled = false;
+          this.sell_button_is_loading = false;
+          if(response.data.nft.forSale){
+            this.selected_nft.forSale = true;
+            this.selected_nft.status = response.data.nft.status;
+            this.toastr.success('Sale has been turned on successfully !');
+          }else{
+            this.selected_nft.forSale = false;
+            this.selected_nft.status = response.data.nft.status;
+            this.toastr.success('Sale has been turned off successfully !');
+          }
+        }).catch(error => {
+          console.log(error);
+          this.sell_button_is_disabled = false;
+          this.sell_button_is_loading = false;
+          this.toastr.error('Something went wrong while updating sale status !');
+        });
+      }
+    }catch(error){
+      this.sell_button_is_disabled = false;
+      this.sell_button_is_loading = false;
+      this.toastr.error('Something went wrong while turning off sell !');
+    }
+  }
+  async updateNFTStatus(status: string){
+    // Update database --
+    let formData = new FormData();
+    formData.append("status", status);
+    formData.append("internalId", this.selected_nft.internalId);
+
+    this.publish_button_is_disabled = true;
+    this.publish_button_is_loading = true;
+    
+    this.nftApiService.updateNFTStatus(formData).then(response => {
+      this.publish_button_is_disabled = false;
+      this.publish_button_is_loading = false;
+      this.selected_nft.status = response.data.nft.status;
+      if(response.data.nft.status === 'published'){
+        this.toastr.success('NFT has been published successfully!');
+      }else if(response.data.nft.status === 'published'){
+        this.toastr.success('NFT has been unpublished successfully!');
+      }
+    }).catch(error => {
+      console.log(error);
+      this.publish_button_is_disabled = false;
+      this.publish_button_is_loading = false;
+      this.toastr.error('Something went wrong while updating NFT status !');
+    });
   }
 }

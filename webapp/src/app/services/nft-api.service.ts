@@ -8,13 +8,16 @@ import { environment } from 'src/environments/environment';
 export class NftApiService {
   constructor() { }
 
-  list(current_page: number, items_per_page: number) {
+  list(current_page: number, items_per_page: number, account: string|null) {
     let url = environment.API_ENDPOINT + "nft/list?";
     if(current_page){
-      url = url + "pageNum=" + current_page + "&";
+      url = url + "pageNum=" + current_page;
     }
     if(items_per_page){
-      url = url + "perPage=" + items_per_page;
+      url = url + "&perPage=" + items_per_page;
+    }
+    if(account){
+      url = url + "&account=" + account;
     }
     const config = {
       method: 'get',
@@ -74,6 +77,16 @@ export class NftApiService {
 
   updateSaleStatus(formData: FormData){
     let url = environment.API_ENDPOINT + "nft/update-sale-status";
+    return axios({
+      method: "post",
+      url: url,
+      data: formData,
+      headers: { "Content-Type": `application/json` },
+    });
+  }
+
+  updateNFTStatus(formData: FormData){
+    let url = environment.API_ENDPOINT + "nft/update-nft-status";
     return axios({
       method: "post",
       url: url,

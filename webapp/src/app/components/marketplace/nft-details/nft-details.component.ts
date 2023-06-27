@@ -22,8 +22,6 @@ export class NftDetailsComponent {
 
   purchase_button_is_loading: boolean = false;
   purchase_button_is_disabled: boolean = false;
-  sell_button_is_loading: boolean = false;
-  sell_button_is_disabled: boolean = false;
 
   constructor(
     private nftApiService: NftApiService,
@@ -109,45 +107,5 @@ export class NftDetailsComponent {
       this.purchase_button_is_disabled = false;
       this.toastr.error('Something went wrong while updating NFT!');
     });
-  }
-  async toggleForSale(){
-    this.sell_button_is_disabled = true;
-    this.sell_button_is_loading = true;
-    try{
-      let newNFTData = await this.blockchain.toggleForSale(this.nftDetails.tokenId);
-      if(newNFTData && newNFTData.tokenId){
-        // Update database --
-        let formData = new FormData();
-        let currentStatus = "false";
-        if(newNFTData.forSale === true){
-          currentStatus = "true";
-        }
-        formData.append("internalId", this.nftDetails.internalId);
-        formData.append("status", currentStatus);
-        this.nftApiService.updateSaleStatus(formData).then(response => {
-          this.sell_button_is_disabled = false;
-          this.sell_button_is_loading = false;
-          if(response.data.nft.forSale){
-            this.nftDetails.forSale = true;
-            this.toastr.success('Sale has been turned on successfully !');
-          }else{
-            this.nftDetails.forSale = false;
-            this.toastr.success('Sale has been turned off successfully !');
-          }
-        }).catch(error => {
-          console.log(error);
-          this.sell_button_is_disabled = false;
-          this.sell_button_is_loading = false;
-          this.toastr.error('Something went wrong while updating sale status !');
-        });
-      }
-    }catch(error){
-      this.sell_button_is_disabled = false;
-      this.sell_button_is_loading = false;
-      this.toastr.error('Something went wrong while turning off sell !');
-    }
-  }
-  async turnOnSell(){
-
   }
 }

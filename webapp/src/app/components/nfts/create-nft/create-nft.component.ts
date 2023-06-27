@@ -3,6 +3,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NftApiService } from 'src/app/services/nft-api.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { Blockchain } from 'src/blockchain';
+import CryptoBoys from 'src/abis/CryptoBoys.json';
 
 @Component({
   selector: 'app-create-nft',
@@ -20,20 +22,25 @@ export class CreateNftComponent implements OnInit {
   thumbnail_path: string = "";
   thumbnailData: any;
   thumbnailImage: string|ArrayBuffer|null;
+  blockchain: Blockchain;
+  account_address: string|null;
 
   constructor(
     private nftApiService: NftApiService,
     private toastr: ToastrService,
     public route: ActivatedRoute
-  ) { }
+  ) {
+    this.blockchain = new Blockchain(CryptoBoys);
+  }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.image_path = environment.NFT_IMAGE_PATH;
     this.thumbnail_path = environment.NFT_THUMBNAIL_PATH;
     let nft_internal_id = this.route.snapshot.paramMap.get('id');
     if(nft_internal_id){
       this.loadNFTDetails(nft_internal_id);
     }
+    this.account_address = await this.blockchain.getAccountAddress();
   }
 
   onSubmit(){
@@ -45,10 +52,15 @@ export class CreateNftComponent implements OnInit {
       this.toastr.error('Please provide price of the NFT !');
       return;
     }
+    if(!this.account_address){
+      this.toastr.error("Could not retrieve account details. Aborting!");
+      return;
+    }
     let formData: FormData = new FormData();
     formData.append('title', this.nft_title);
     formData.append('price', this.nft_price);
     formData.append('thumbnail', this.thumbnailData);
+    formData.append("mintedBy", this.account_address);
     this.selected_files.forEach((file: any) => {
       formData.append('nfts', file.originalFile);
     });

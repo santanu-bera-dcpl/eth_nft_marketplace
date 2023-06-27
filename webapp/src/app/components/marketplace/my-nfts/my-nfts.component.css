@@ -10,12 +10,18 @@
 }
 .nftCard{
     flex-basis: 200px;
-    height: 250px;
+    height: 300px;
     padding: 0 !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-bottom: 10px !important;
+}
+.nftCard img{
+    width: 100%;
+    min-height: 150px !important;
+    max-height: 150px !important;
+    object-fit: cover;
 }
 .spacer{
     flex: 1;
